@@ -1,0 +1,1 @@
+# oolite_mingw64_environment
