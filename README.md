@@ -1,1 +1,3 @@
-# oolite_mingw64_environment
+# Oolite MSYS2 MinGW64 Environment
+
+Run ./install.sh
