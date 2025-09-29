@@ -1,10 +1,6 @@
-# Ignore everything
-*
+# Ignore in folder
+*mingw-w64-*/*
+packages/
 
 # But keep these
-!.gitignore
-!*.lnk
-!*.sh
-!*.md
-!*.cmd
-!PKGBUILD
+!mingw-w64-*/PKGBUILD

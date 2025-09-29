@@ -1,0 +1,42 @@
+# Maintainer: Michael Rans <rans@email.com>
+
+_realname=spidermonkey
+_reponame=oolite_mozjsnspr_mingw64
+pkgbase=mingw-w64-${_realname}
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=4+08574e9
+pkgrel=1
+pkgdesc="Oolite Spidermonkey"
+arch=('any')
+mingw_arch=('mingw64')
+url="https://github.com/mcarans/oolite_mozjsnspr_mingw64"
+license=("LGPL")
+makedepends=("${MINGW_PACKAGE_PREFIX}-cc" "nsinstall" "git")
+depends=("${MINGW_PACKAGE_PREFIX}-cc-libs" "${MINGW_PACKAGE_PREFIX}-nspr")
+_commit=feec6baa2caa4d4ad54d674a1c3b1b2bf5bfc2ce
+source=("git+https://github.com/mcarans/${_reponame}#commit=${_commit}")
+sha256sums=('79e133c9f205b96a5257d7cd5d09a4ffd5cf0be9746166dcc79bad94ae8766c7')
+
+pkgver() {
+  cd "$srcdir/$_gitname"
+  # Use short hash
+  printf "%s" "4+$(git rev-parse --short HEAD)"
+}
+
+build() {
+  cd "${srcdir}/${_reponame}/js/src"
+  ./build_js_release.sh
+}
+
+check() {
+  cd "${srcdir}/${_reponame}/js/src"
+}
+
+package() {
+  cd "${srcdir}/${_reponame}/js/src"
+
+  make DESTDIR="${pkgdir}" install
+#  mv ${pkgdir}${MINGW_PREFIX}/lib/*.dll ${pkgdir}${MINGW_PREFIX}/bin
+
+  install -Dm644 "${srcdir}/${_reponame}/js/src/LICENSE" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/COPYING" 
+}
