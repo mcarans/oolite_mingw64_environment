@@ -1,0 +1,56 @@
+# CMake build directories
+/build/
+/build-*/
+/[Cc]MakeCache.txt
+[Cc]MakeFiles/
+/cmake_install.cmake
+/Makefile
+/install_manifest.txt
+/compile_commands.json
+/CMakeScripts/
+
+# Ninja build files
+.ninja_deps
+.ninja_log
+rules.ninja
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# CLion / JetBrains
+.idea/
+cmake-build-*/
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+*.xcuserdatad
+
+# Windows
+*.exe
+*.dll
+*.lib
+*.pdb
+
+# Linux / macOS
+*.so
+*.dylib
+*.out
+
+# Object files
+*.o
+*.obj
+
+# Static libraries
+*.a
+*.la
+
+# Logs and temp
+*.log
+*.tmp
+*.swp
+
+# Generated test files
+Testing/
+CTestTestfile.cmake
