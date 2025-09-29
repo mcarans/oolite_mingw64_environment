@@ -14,7 +14,7 @@ msys2_references=(
   "cpe: cpe:/a:libsdl:simple_directmedia_layer"
 )
 license=("LGPL")
-makedepends=("${MINGW_PACKAGE_PREFIX}-cc" "${MINGW_PACKAGE_PREFIX}-autotools" 'git')
+makedepends=("${MINGW_PACKAGE_PREFIX}-cc" "${MINGW_PACKAGE_PREFIX}-autotools" "git")
 depends=("${MINGW_PACKAGE_PREFIX}-cc-libs" "${MINGW_PACKAGE_PREFIX}-libiconv")
 _commit=e711414dc34263f396d54183c52f9b3f7feecea9 # oolite_changes
 source=("git+https://github.com/mcarans/oolite_SDL-1.2#commit=${_commit}")
