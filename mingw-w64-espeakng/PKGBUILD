@@ -3,7 +3,7 @@
 _realname=espeak-ng
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
-pkgver=1.52+ccdf5de
+pkgver=1.52+b76579a
 pkgrel=1
 pkgdesc="A text-to-speech synthesizer for Linux, Windows, Android and other operating systems"
 arch=('any')
@@ -12,9 +12,9 @@ url="https://github.com/espeak-ng/espeak-ng"
 license=("LGPL")
 makedepends=("${MINGW_PACKAGE_PREFIX}-cc" "${MINGW_PACKAGE_PREFIX}-cmake" "${MINGW_PACKAGE_PREFIX}-ninja" "git")
 depends=("${MINGW_PACKAGE_PREFIX}-cc-libs")
-_commit=6f07580b8dd6ec0cf3419d5bceff097de2e213df
+_commit=67d8e09ae8c3378a6e9862fc319d9991a4a9dd88
 source=("git+https://github.com/mcarans/espeak-ng#commit=${_commit}")
-sha256sums=('5b8f9a8923967ce237f82bfb6b5d012657a6b70a684e1a8d2499796490963391')
+sha256sums=('5ddff58177dae1aaed446c20d697126fa4b042471da409eb23f0ab92fc88b985')
 
 pkgver() {
   cd "$srcdir/$_gitname"
