@@ -3,7 +3,7 @@ pacboy -S binutils --noconfirm
 
 mkdir packages
 
-package_names=(SDL gnustep-make gnustep-base pcaudiolib)
+package_names=(SDL gnustep-make gnustep-base pcaudiolib espeakng nspr spidermonkey)
 
 for packagename in "${package_names[@]}"; do
     echo "Making $packagename package"
