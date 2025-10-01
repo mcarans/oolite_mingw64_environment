@@ -4,7 +4,7 @@ _realname=spidermonkey
 _reponame=oolite_mozjsnspr_mingw64
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
-pkgver=4+08574e9
+pkgver=4+a9e6c0f
 pkgrel=1
 pkgdesc="Oolite Spidermonkey"
 arch=('any')
@@ -13,9 +13,9 @@ url="https://github.com/mcarans/oolite_mozjsnspr_mingw64"
 license=("LGPL")
 makedepends=("${MINGW_PACKAGE_PREFIX}-cc" "nsinstall" "git")
 depends=("${MINGW_PACKAGE_PREFIX}-cc-libs" "${MINGW_PACKAGE_PREFIX}-nspr")
-_commit=feec6baa2caa4d4ad54d674a1c3b1b2bf5bfc2ce
+_commit=54cf0e4abe2c2e08fe11bfd259f9655a14a669bc
 source=("git+https://github.com/mcarans/${_reponame}#commit=${_commit}")
-sha256sums=('79e133c9f205b96a5257d7cd5d09a4ffd5cf0be9746166dcc79bad94ae8766c7')
+sha256sums=('f643faf7cbdd68f7b43973d8fb03590e823b648ca39efda14982abec023c1574')
 
 pkgver() {
   cd "$srcdir/$_gitname"
@@ -33,10 +33,13 @@ check() {
 }
 
 package() {
-  cd "${srcdir}/${_reponame}/js/src"
+  cd "${srcdir}/${_reponame}/js/src/WINNT5.1_OPT.OBJ"
 
-  make DESTDIR="${pkgdir}" install
-#  mv ${pkgdir}${MINGW_PREFIX}/lib/*.dll ${pkgdir}${MINGW_PREFIX}/bin
-
-  install -Dm644 "${srcdir}/${_reponame}/js/src/LICENSE" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/COPYING" 
+  mkdir -p ${pkgdir}${MINGW_PREFIX}/bin
+  mkdir -p ${pkgdir}${MINGW_PREFIX}/include
+  mkdir -p ${pkgdir}${MINGW_PREFIX}/lib
+  cp js32ECMAv5.dll ${pkgdir}${MINGW_PREFIX}/bin
+  cp libjs32ECMAv5.dll.a ${pkgdir}${MINGW_PREFIX}/lib
+  cd ..  
+  cp *.h ${pkgdir}${MINGW_PREFIX}/include
 }
