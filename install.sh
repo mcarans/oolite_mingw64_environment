@@ -1,9 +1,10 @@
 pacman -S pactoys --noconfirm
 pacboy -S binutils --noconfirm
 
+rm -rf packages
 mkdir packages
 
-package_names=(SDL gnustep-make gnustep-base pcaudiolib espeakng nspr spidermonkey)
+package_names=(SDL gnustep-make gnustep-base pcaudiolib espeak-ng nspr spidermonkey)
 
 for packagename in "${package_names[@]}"; do
     echo "Making $packagename package"

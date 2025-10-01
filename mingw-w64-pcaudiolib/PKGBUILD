@@ -3,7 +3,7 @@
 _realname=pcaudiolib
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
-pkgver=1.3+f6af469
+pkgver=1.3+96e29c3
 pkgrel=1
 pkgdesc="A portable cross-platform audio library"
 arch=('any')
