@@ -4,14 +4,14 @@ _realname=nspr
 _reponame=oolite_mozjsnspr_mingw64
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
-pkgver=4.38+96e29c3
+pkgver=4.38+18c9b0d
 pkgrel=1
 pkgdesc="Oolite Netscape Portable Runtime"
 arch=('any')
 mingw_arch=('mingw64')
 url="https://github.com/mcarans/oolite_mozjsnspr_mingw64"
 license=("LGPL")
-makedepends=("${MINGW_PACKAGE_PREFIX}-cc" "nsinstall" "git")
+makedepends=("${MINGW_PACKAGE_PREFIX}-cc"  "make" "nsinstall" "git")
 depends=("${MINGW_PACKAGE_PREFIX}-cc-libs")
 _commit=d4b460cc34c820508ac73b8e5865979ea968eb0c
 source=("git+https://github.com/mcarans/${_reponame}#commit=${_commit}")

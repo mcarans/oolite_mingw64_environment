@@ -13,8 +13,7 @@ for packagename in "${package_names[@]}"; do
 	pacman -U *$packagename*any.pkg.tar.zst --noconfirm
 	rm -f ../packages/*$packagename*any.pkg.tar.zst
 	mv *$packagename*any.pkg.tar.zst ../packages
-	cd ..	
+	cd ..
 done
 
-pacman -Q > installed-packages.txt
-cd ..
+pacman -Q > packages/installed-packages.txt
