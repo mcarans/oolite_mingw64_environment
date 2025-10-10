@@ -9,6 +9,7 @@ package_names=(pcaudiolib espeak-ng nspr spidermonkey gnustep-make gnustep-base 
 for packagename in "${package_names[@]}"; do
     echo "Making $packagename package"
 	cd mingw-w64-$packagename
+	find . -mindepth 1 ! -name PKGBUILD -exec rm -rf {} +	
 	makepkg -s -f --noconfirm
 	pacman -U *$packagename*any.pkg.tar.zst --noconfirm
 	rm -f ../packages/*$packagename*any.pkg.tar.zst
@@ -20,10 +21,11 @@ pacman -Q > packages/installed-packages.txt
 
 pacman -S git --noconfirm
 
-pacboy -S libpng
-pacboy -S openal
-pacboy -S libvorbis
+pacboy -S libpng --noconfirm
+pacboy -S openal --noconfirm
+pacboy -S libvorbis --noconfirm
 
+rm -rf oolite
 git clone -b modern_build https://github.com/mcarans/oolite.git
 cd oolite
 
