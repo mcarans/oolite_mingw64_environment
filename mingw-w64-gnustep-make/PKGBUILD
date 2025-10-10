@@ -23,6 +23,7 @@ build() {
   mkdir -p "${srcdir}/build-${MSYSTEM}" && cd "${srcdir}/build-${MSYSTEM}"
 
   ../"${_realname}-${pkgver}"/configure \
+    --enable-native-objc-exceptions \
     --with-library-combo=gnu-gnu-gnu \
     --prefix="${MINGW_PREFIX}" \
     --build="${MINGW_CHOST}" \

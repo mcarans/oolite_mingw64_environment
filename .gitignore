@@ -1,6 +1,7 @@
 # Ignore in folder
 *mingw-w64-*/*
 packages/
+oolite/
 
 # But keep these
 !mingw-w64-*/PKGBUILD

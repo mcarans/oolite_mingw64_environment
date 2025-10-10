@@ -17,3 +17,20 @@ for packagename in "${package_names[@]}"; do
 done
 
 pacman -Q > packages/installed-packages.txt
+
+pacman -S git --noconfirm
+
+pacboy -S libpng
+pacboy -S openal
+pacboy -S libvorbis
+
+git clone -b modern_build https://github.com/mcarans/oolite.git
+cd oolite
+
+cp .absolute_gitmodules .gitmodules
+git submodule update --init
+git checkout -- .gitmodules
+
+source /mingw64/share/GNUstep/Makefiles/GNUstep.sh
+make -f Makefile clean
+make -f Makefile release -j16

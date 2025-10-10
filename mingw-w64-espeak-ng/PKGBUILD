@@ -3,7 +3,7 @@
 _realname=espeak-ng
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
-pkgver=1.52+18c9b0d
+pkgver=1.52+21cc838
 pkgrel=1
 pkgdesc="A text-to-speech synthesizer for Linux, Windows, Android and other operating systems"
 arch=('any')
@@ -11,7 +11,7 @@ mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
 url="https://github.com/espeak-ng/espeak-ng"
 license=("LGPL")
 makedepends=("${MINGW_PACKAGE_PREFIX}-cc" "${MINGW_PACKAGE_PREFIX}-cmake" "${MINGW_PACKAGE_PREFIX}-ninja" "git")
-depends=("${MINGW_PACKAGE_PREFIX}-cc-libs")
+depends=("${MINGW_PACKAGE_PREFIX}-cc-libs" "${MINGW_PACKAGE_PREFIX}-pcaudiolib")
 _commit=67d8e09ae8c3378a6e9862fc319d9991a4a9dd88
 source=("git+https://github.com/mcarans/espeak-ng#commit=${_commit}")
 sha256sums=('5ddff58177dae1aaed446c20d697126fa4b042471da409eb23f0ab92fc88b985')
@@ -36,6 +36,7 @@ build() {
     -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
     -DBUILD_SHARED_LIBS=YES \
 	-DHAVE_PTHREAD=yes \
+	-DUSE_LIBPCAUDIO=yes \
     ${extra_config[@]} \
     -S ${_realname} \
     -B build-${MSYSTEM}
@@ -50,6 +51,8 @@ check() {
 
 package() {
   DESTDIR="${pkgdir}" cmake --install build-${MSYSTEM}
+  cd ${pkgdir}${MINGW_PREFIX}/include/espeak
+  echo "#include \"../espeak-ng/speak_lib.h\"" > speak_lib.h
   
   install -Dm644 "${srcdir}/${_realname}/COPYING" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/COPYING" 
 }
