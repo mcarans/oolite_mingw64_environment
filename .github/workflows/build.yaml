@@ -10,5 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Install
+      shell: cmd
       run: |
         echo c: | setup.cmd
