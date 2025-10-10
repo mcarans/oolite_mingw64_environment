@@ -1,6 +1,6 @@
+pacman -S dos2unix --noconfirm
 pacman -S pactoys --noconfirm
 pacboy -S binutils --noconfirm
-pacboy -S dos2unix --noconfirm
 
 rm -rf packages
 mkdir packages
