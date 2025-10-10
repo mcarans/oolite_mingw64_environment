@@ -1,5 +1,6 @@
 pacman -S pactoys --noconfirm
 pacboy -S binutils --noconfirm
+pacboy -S dos2unix --noconfirm
 
 rm -rf packages
 mkdir packages
@@ -10,6 +11,7 @@ for packagename in "${package_names[@]}"; do
     echo "Making $packagename package"
 	cd mingw-w64-$packagename
 	find . -mindepth 1 ! -name PKGBUILD -exec rm -rf {} +	
+	dos2unix PKGBUILD
 	makepkg -s -f --noconfirm
 	pacman -U *$packagename*any.pkg.tar.zst --noconfirm
 	rm -f ../packages/*$packagename*any.pkg.tar.zst
