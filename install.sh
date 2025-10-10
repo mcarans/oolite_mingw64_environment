@@ -17,13 +17,13 @@ for packagename in "${package_names[@]}"; do
 	cd ..
 done
 
-pacman -Q > packages/installed-packages.txt
-
 pacman -S git --noconfirm
 
 pacboy -S libpng --noconfirm
 pacboy -S openal --noconfirm
 pacboy -S libvorbis --noconfirm
+
+pacman -Q > packages/installed-packages.txt
 
 rm -rf oolite
 git clone -b modern_build https://github.com/mcarans/oolite.git
