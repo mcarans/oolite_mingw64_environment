@@ -1,4 +1,4 @@
-name: Build Oolite and all dependencies
+name: Build Oolite
 
 on:
   workflow_dispatch: # add run button in github
@@ -16,4 +16,4 @@ jobs:
     - name: Install
       shell: msys2 {0}
       run: |
-        install.sh
+        ./install.sh
