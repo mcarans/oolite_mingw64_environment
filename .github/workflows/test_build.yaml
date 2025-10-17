@@ -1,4 +1,4 @@
-name: Build Oolite
+name: Test build Oolite packages
 
 on:
   workflow_dispatch: # add run button in github
@@ -8,7 +8,7 @@ jobs:
     runs-on: windows-2025
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Set up MSYS2 (MinGW)
       uses: msys2/setup-msys2@v2
       with:

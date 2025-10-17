@@ -1,0 +1,27 @@
+name: Release Oolite packages
+
+on:
+  release:
+    types: [created]   # Trigger only when a new release is createdjobs:
+
+  run:
+
+    runs-on: windows-2025
+
+    steps:
+    - uses: actions/checkout@v5
+    - name: Set up MSYS2 (MinGW)
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+    - name: Install
+      shell: msys2 {0}
+      run: |
+        ./install.sh
+    # Upload artifacts to the release
+    - name: Upload to GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: packages/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
