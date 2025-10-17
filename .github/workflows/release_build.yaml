@@ -3,9 +3,8 @@ name: Release Oolite packages
 on:
   release:
     types: [created]   # Trigger only when a new release is createdjobs:
-
+jobs:
   run:
-
     runs-on: windows-2025
 
     steps:

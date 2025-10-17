@@ -4,7 +4,6 @@ on:
   workflow_dispatch: # add run button in github
 jobs:
   run:
-
     runs-on: windows-2025
 
     steps:
