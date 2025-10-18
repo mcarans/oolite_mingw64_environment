@@ -5,3 +5,4 @@ oolite/
 
 # But keep these
 !mingw-w64-*/PKGBUILD
+!mingw-w64-*/*.patch

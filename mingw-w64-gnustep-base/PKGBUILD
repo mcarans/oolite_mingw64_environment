@@ -30,8 +30,15 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-autotools"
              "${MINGW_PACKAGE_PREFIX}-curl"
              patchutils
              rsync)
-source=("${msys2_repository_url}/releases/download/base-${pkgver//./_}/${_realname}-${pkgver}.tar.gz")
-sha256sums=('e7546f1c978a7c75b676953a360194a61e921cb45a4804497b4f346a460545cd')
+source=("${msys2_repository_url}/releases/download/base-${pkgver//./_}/${_realname}-${pkgver}.tar.gz"
+        "0001-gnustep-nsuserdefaults-openstep-format.patch")
+sha256sums=('e7546f1c978a7c75b676953a360194a61e921cb45a4804497b4f346a460545cd'
+            'e1311471be18815d3cb2535f3d104c059dd8bfc18026addd2ba62d6c98382717')
+
+prepare() {
+  cd "${_realname}-${pkgver}"
+  git apply "${srcdir}"/0001-gnustep-nsuserdefaults-openstep-format.patch
+}
 
 build() {
   rsync --recursive --times --links "${srcdir}/${_realname}-${pkgver}"/* "${srcdir}/build-${MSYSTEM}"

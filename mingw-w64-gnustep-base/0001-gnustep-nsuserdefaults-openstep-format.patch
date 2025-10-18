@@ -1,0 +1,11 @@
+--- a/Source/NSUserDefaults_orig.m
++++ b/Source/NSUserDefaults.m
+@@ -333,7 +333,7 @@ writeDictionary(NSDictionary *dict, NSString *file)
+ 
+       err = nil;
+       data = [NSPropertyListSerialization dataFromPropertyList: dict
+-	       format: NSPropertyListXMLFormat_v1_0
++	       format: NSPropertyListOpenStepFormat
+ 	       errorDescription: &err];
+       if (data == nil)
+ 	{
