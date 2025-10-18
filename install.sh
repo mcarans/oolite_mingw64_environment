@@ -20,7 +20,6 @@ for packagename in "${package_names[@]}"; do
 done
 
 pacman -S git --noconfirm
-
 pacboy -S libpng --noconfirm
 pacboy -S openal --noconfirm
 pacboy -S libvorbis --noconfirm
@@ -38,3 +37,18 @@ git checkout -- .gitmodules
 source /mingw64/share/GNUstep/Makefiles/GNUstep.sh
 make -f Makefile clean
 make -f Makefile release -j16
+
+cp /mingw64/share/GNUstep/Makefiles/GNUstep.sh /etc/profile.d/
+
+if ! grep -q "# Custom history settings" ~/.bashrc; then
+  cat >> ~/.bashrc <<'EOF'
+
+# Custom history settings
+WIN_HOME=$(cygpath "$USERPROFILE")
+export HISTFILE=$WIN_HOME/.bash_history
+export HISTSIZE=5000
+export HISTFILESIZE=10000
+shopt -s histappend
+PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+EOF
+fi
