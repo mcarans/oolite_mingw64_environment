@@ -5,14 +5,17 @@ pacboy -S binutils --noconfirm
 rm -rf packages
 mkdir packages
 
-package_names=(pcaudiolib espeak-ng nspr spidermonkey gnustep-make gnustep-base SDL)
+package_names=(gnustep-make gnustep-base pcaudiolib espeak-ng nspr spidermonkey SDL)
 
 for packagename in "${package_names[@]}"; do
     echo "Making $packagename package"
 	cd mingw-w64-$packagename
 	find . -mindepth 1 ! -name PKGBUILD -exec rm -rf {} +	
 	dos2unix PKGBUILD
-	makepkg -s -f --noconfirm
+	if ! makepkg -s -f --noconfirm ; then
+	    echo "❌ $packagename build failed!"
+	    exit 1
+	fi
 	pacman -U *$packagename*any.pkg.tar.zst --noconfirm
 	rm -f ../packages/*$packagename*any.pkg.tar.zst
 	mv *$packagename*any.pkg.tar.zst ../packages
