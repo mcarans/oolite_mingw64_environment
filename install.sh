@@ -8,7 +8,7 @@ mkdir packages
 package_names=(gnustep-make gnustep-base nspr spidermonkey pcaudiolib espeak-ng SDL)
 
 for packagename in "${package_names[@]}"; do
-    echo "Making $packagename package"
+    echo "Building and installing $packagename package"
 	cd mingw-w64-$packagename
 	# Deletes everything except PKGBUILD and *.patch
 	find . -mindepth 1 ! -name PKGBUILD ! -name '*.patch' -exec rm -rf {} +
