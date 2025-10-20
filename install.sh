@@ -12,7 +12,7 @@ for packagename in "${package_names[@]}"; do
 	cd mingw-w64-$packagename
 	# Deletes everything except PKGBUILD and *.patch
 	find . -mindepth 1 ! -name PKGBUILD ! -name '*.patch' -exec rm -rf {} +
-	dos2unix PKGBUILD
+	dos2unix PKGBUILD *.patch
 	if ! makepkg -s -f --noconfirm ; then
 	    echo "❌ $packagename build failed!"
 	    exit 1
