@@ -28,6 +28,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-autotools"
              "${MINGW_PACKAGE_PREFIX}-gcc"
              "${MINGW_PACKAGE_PREFIX}-gnustep-make"
              "${MINGW_PACKAGE_PREFIX}-curl"
+             patch
              patchutils
              rsync)
 source=("${msys2_repository_url}/releases/download/base-${pkgver//./_}/${_realname}-${pkgver}.tar.gz"
