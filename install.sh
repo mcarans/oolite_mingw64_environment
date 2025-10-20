@@ -5,7 +5,7 @@ pacboy -S binutils --noconfirm
 rm -rf packages
 mkdir packages
 
-package_names=(gnustep-make gnustep-base pcaudiolib espeak-ng nspr spidermonkey SDL)
+package_names=(gnustep-make gnustep-base nspr spidermonkey pcaudiolib espeak-ng SDL)
 
 for packagename in "${package_names[@]}"; do
     echo "Making $packagename package"
@@ -17,7 +17,10 @@ for packagename in "${package_names[@]}"; do
 	    echo "❌ $packagename build failed!"
 	    exit 1
 	fi
-	pacman -U *$packagename*any.pkg.tar.zst --noconfirm
+	if ! pacman -U *$packagename*any.pkg.tar.zst --noconfirm ; then
+	    echo "❌ $packagename install failed!"
+	    exit 1
+	fi
 	rm -f ../packages/*$packagename*any.pkg.tar.zst
 	mv *$packagename*any.pkg.tar.zst ../packages
 	cd ..
