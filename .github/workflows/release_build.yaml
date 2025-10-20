@@ -19,6 +19,15 @@ jobs:
       shell: msys2 {0}
       run: |
         ./install.sh
+        
+    # Upload artifacts to the release
+    - name: Upload to GitHub Release
+      if: success()
+      uses: softprops/action-gh-release@v2
+      with:
+        files: packages/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Delete release and tag on failure
       if: failure()
@@ -34,11 +43,3 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_REF_NAME: ${{ github.event.release.tag_name }}
-        
-    # Upload artifacts to the release
-    - name: Upload to GitHub Release
-      uses: softprops/action-gh-release@v2
-      with:
-        files: packages/*
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
