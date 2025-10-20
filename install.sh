@@ -10,6 +10,7 @@ package_names=(gnustep-make gnustep-base pcaudiolib espeak-ng nspr spidermonkey 
 for packagename in "${package_names[@]}"; do
     echo "Making $packagename package"
 	cd mingw-w64-$packagename
+	# Deletes everything except PKGBUILD and *.patch
 	find . -mindepth 1 ! -name PKGBUILD ! -name '*.patch' -exec rm -rf {} +
 	dos2unix PKGBUILD
 	if ! makepkg -s -f --noconfirm ; then
