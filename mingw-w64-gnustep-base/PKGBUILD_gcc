@@ -35,7 +35,7 @@ source=("git+https://github.com/gnustep/libs-base#commit=${_commit}")
 sha256sums=('459ac251d4a91f56edd90da2cdc9ac5a2df20761a22231dd3ad86a3c0034adce')
 
 build() {
-  rsync --recursive --times --links "${srcdir}/${_realname}-${pkgver}"/* "${srcdir}/build-${MSYSTEM}"
+  rsync --recursive --times --links "${srcdir}/libs-base"/* "${srcdir}/build-${MSYSTEM}"
   cd "${srcdir}/build-${MSYSTEM}"
 
   ./configure \
@@ -55,5 +55,5 @@ package() {
 
   make install DESTDIR="${pkgdir}"
 
-  install -Dm644 "${srcdir}/${_realname}-${pkgver}/COPYING" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/COPYING"
+  install -Dm644 "${srcdir}/libs-base/COPYING" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/COPYING"
 }
