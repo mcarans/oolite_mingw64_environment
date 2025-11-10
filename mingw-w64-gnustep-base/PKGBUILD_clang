@@ -1,0 +1,62 @@
+# Maintainer: Frederik Carlier <frederik.carlier@keysight.com>
+
+_realname=gnustep-base
+pkgbase=mingw-w64-${_realname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+pkgver=1.31.1
+pkgrel=4
+pkgdesc="GNUstep Base library (mingw-w64)"
+arch=('any')
+mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
+url='https://gnustep.github.org/'
+msys2_references=(
+  "cpe: cpe:/a:gnustep:base"
+)
+license=('spdx:LGPL-2.1-or-later')
+depends=("${MINGW_PACKAGE_PREFIX}-cc-libs"
+         "${MINGW_PACKAGE_PREFIX}-gnutls"
+         "${MINGW_PACKAGE_PREFIX}-icu"
+         "${MINGW_PACKAGE_PREFIX}-libffi"
+         "${MINGW_PACKAGE_PREFIX}-libiconv"
+         "${MINGW_PACKAGE_PREFIX}-libxml2"
+         "${MINGW_PACKAGE_PREFIX}-libxslt"
+         "${MINGW_PACKAGE_PREFIX}-zlib"
+)
+makedepends=("${MINGW_PACKAGE_PREFIX}-autotools"
+             "${MINGW_PACKAGE_PREFIX}-clang"
+             "${MINGW_PACKAGE_PREFIX}-lld"
+             "${MINGW_PACKAGE_PREFIX}-gnustep-make"
+             "${MINGW_PACKAGE_PREFIX}-curl"
+             patch
+             patchutils
+             rsync)
+
+_commit=2b2ba476d1f133bdf960085a64922f7f471457c1
+source=("git+https://github.com/gnustep/libs-base#commit=${_commit}")
+sha256sums=('459ac251d4a91f56edd90da2cdc9ac5a2df20761a22231dd3ad86a3c0034adce')
+
+build() {
+  rsync --recursive --times --links "${srcdir}/libs-base"/* "${srcdir}/build-${MSYSTEM}"
+  cd "${srcdir}/build-${MSYSTEM}"
+
+  CC="$MINGW_PREFIX/bin/clang" \
+  CXX="$MINGW_PREFIX/bin/clang++" \
+  ./configure \
+    --prefix="${MINGW_PREFIX}"
+
+  CC="$MINGW_PREFIX/bin/clang" \
+  CXX="$MINGW_PREFIX/bin/clang++" \
+  make
+}
+
+check() {
+  cd "${srcdir}/build-${MSYSTEM}"
+}
+
+package() {
+  cd "${srcdir}/build-${MSYSTEM}"
+
+  make install DESTDIR="${pkgdir}"
+
+  install -Dm644 "${srcdir}/libs-base/COPYING" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/COPYING"
+}

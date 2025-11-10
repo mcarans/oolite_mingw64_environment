@@ -15,6 +15,6 @@ echo Running in: %CD%
 
 echo === Launch MinGW64 shell, build Oolite dependencies, install Oolite  ===
 
-c:\msys64\msys2_shell.cmd -mingw64 -defterm -here -no-start -c "./install.sh; exec bash"
+c:\msys64\msys2_shell.cmd -mingw64 -defterm -here -no-start -c "./install.sh gcc; exec bash"
 
 endlocal

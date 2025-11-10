@@ -1,3 +1,7 @@
+# No parameters: build both clang and gcc in that order (end setup will be for gcc)
+# One parameter gcc = build gcc only (end setup will be for gcc)
+# One parameter clang = build clang only (end setup will be for clang)
+
 pacman -S dos2unix --noconfirm
 pacman -S pactoys --noconfirm
 pacboy -S binutils --noconfirm
@@ -5,25 +9,53 @@ pacboy -S binutils --noconfirm
 rm -rf packages
 mkdir packages
 
-package_names=(gnustep-make gnustep-base spidermonkey pcaudiolib espeak-ng SDL)
+build_install() {
+	# First parameter is package name
+	# Second optional parameter is gcc or clang
+    echo "Building and installing $1 package"
+	cd mingw-w64-$1
+	# Deletes everything except PKGBUILD* and *.patch
+	find . -mindepth 1 ! -name 'PKGBUILD*' ! -name '*.patch' -exec rm -rf {} +
 
-for packagename in "${package_names[@]}"; do
-    echo "Building and installing $packagename package"
-	cd mingw-w64-$packagename
-	# Deletes everything except PKGBUILD and *.patch
-	find . -mindepth 1 ! -name PKGBUILD ! -name '*.patch' -exec rm -rf {} +
+    if [ -z "$2" ]; then
+		fullname=$1
+    else
+		# copy PKGBUILD_gcc or PKGBUILD_clang to PKGBUILD
+		fullname="${1}_${2}"
+		cp "PKGBUILD_${2}" PKGBUILD
+    fi
 	dos2unix PKGBUILD *.patch
 	if ! makepkg -s -f --noconfirm ; then
-	    echo "❌ $packagename build failed!"
+	    echo "❌ $1 build failed!"
 	    exit 1
 	fi
-	if ! pacman -U *$packagename*any.pkg.tar.zst --noconfirm ; then
-	    echo "❌ $packagename install failed!"
+
+	pattern="*$1*any.pkg.tar.zst"
+	# package file eg. mingw-w64-x86_64-libobjc2-2.3-3-any.pkg.tar.zst
+    filename=$(ls $pattern 2>/dev/null)
+    if [ -z "$filename" ]; then
+        echo "❌ No file matching $pattern found."
+        exit 1
+    fi
+    if [ "$2" ]; then
+		# add gcc or clang to filename
+        newname="${filename/$1/$fullname}"
+        mv $filename $newname
+        filename=$newname
+	fi
+    if ! pacman -U $filename --noconfirm ; then
+	    echo "❌ $filename install failed!"
 	    exit 1
 	fi
-	rm -f ../packages/*$packagename*any.pkg.tar.zst
-	mv *$packagename*any.pkg.tar.zst ../packages
+	rm -f ../packages/*$fullname*any.pkg.tar.zst
+	mv $filename ../packages
 	cd ..
+}
+
+echo "Building common libraries"
+package_names=(spidermonkey pcaudiolib espeak-ng SDL)
+for packagename in "${package_names[@]}"; do
+	build_install $packagename
 done
 
 pacman -S git --noconfirm
@@ -31,19 +63,54 @@ pacboy -S libpng --noconfirm
 pacboy -S openal --noconfirm
 pacboy -S libvorbis --noconfirm
 
-pacman -Q > packages/installed-packages.txt
-
 rm -rf oolite
-git clone -b modern_build https://github.com/mcarans/oolite.git
+git clone -b modern_build --filter=blob:none https://github.com/mcarans/oolite.git
 cd oolite
-
 cp .absolute_gitmodules .gitmodules
 git submodule update --init
 git checkout -- .gitmodules
+cd ..
 
-source /mingw64/share/GNUstep/Makefiles/GNUstep.sh
-make -f Makefile clean
-make -f Makefile release -j16
+if [[ -z "$1" || "$1" == "clang" ]]; then
+	echo "Building GNUStep libraries with clang"
+	export cc=/mingw64/bin/clang
+	export cpp=/mingw64/bin/clang++
+	clang_package_names=(libobjc2 gnustep-make gnustep-base)
+	for packagename in "${clang_package_names[@]}"; do
+		build_install $packagename clang
+	done
+	pacman -Q > packages/installed-packages-clang.txt
+	source /mingw64/share/GNUstep/Makefiles/GNUstep.sh
+
+	cd oolite
+	make -f Makefile clean
+	make -f Makefile release -j16
+	cd ..
+fi
+
+if [[ -z "$1" ]]; then
+	echo "Uninstalling clang GNUStep libraries"
+	pacboy -R gnustep-base
+	pacboy -R gnustep-make
+	pacboy -R libobjc2
+fi
+
+if [[ -z "$1" || "$1" == "gcc" ]]; then
+	echo "Building GNUStep libraries with gcc"
+	export cc=/mingw64/bin/gcc
+	export cpp=/mingw64/bin/g++
+	gcc_package_names=(gnustep-make gnustep-base)
+	for packagename in "${gcc_package_names[@]}"; do
+		build_install $packagename gcc
+	done
+	pacman -Q > packages/installed-packages-gcc.txt
+	source /mingw64/share/GNUstep/Makefiles/GNUstep.sh
+
+	cd oolite
+	make -f Makefile clean
+	make -f Makefile release -j16
+	cd ..
+fi
 
 cp /mingw64/share/GNUstep/Makefiles/GNUstep.sh /etc/profile.d/
 

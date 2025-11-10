@@ -1,0 +1,80 @@
+# Maintainer: Frederik Carlier <frederik.carlier@keysight.com>
+
+_realname=libobjc2
+pkgbase=mingw-w64-${_realname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+if [[ ${MSYSTEM} != CLANG* ]]; then
+  conflicts=("${MINGW_PACKAGE_PREFIX}-gcc-objc")
+fi
+pkgver=2.3
+pkgrel=3
+pkgdesc="Objective-C runtime library intended for use with Clang. (mingw-w64)"
+arch=('any')
+mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
+url="https://github.com/gnustep/libobjc2"
+license=('spdx:MIT')
+depends=("${MINGW_PACKAGE_PREFIX}-cc-libs")
+makedepends=("${MINGW_PACKAGE_PREFIX}-cmake"
+             "${MINGW_PACKAGE_PREFIX}-clang"
+             "${MINGW_PACKAGE_PREFIX}-lld"
+             "${MINGW_PACKAGE_PREFIX}-robin-map"
+             'git')
+source=("https://github.com/gnustep/${_realname}/archive/v${pkgver}/${_realname}-${pkgver}.tar.gz")
+sha256sums=('5ead2276b42a534ac40437ce53b2231320b985539dc325453d93874be8d92869')
+
+build() {
+  mkdir -p "${srcdir}/build-${MSYSTEM}" && cd "${srcdir}/build-${MSYSTEM}"
+
+  declare -a extra_config
+  if check_option "debug" "n"; then
+    extra_config+=("-DCMAKE_BUILD_TYPE=Release")
+  else
+    extra_config+=("-DCMAKE_BUILD_TYPE=Debug")
+  fi
+  
+  case ${MSYSTEM} in
+    MINGW*|UCRT*)
+      export LDFLAGS="-fuse-ld=lld -lstdc++ -lgcc_s"
+      ;;
+    CLANG*)
+      export LDFLAGS="-lc++"
+      ;;
+  esac
+
+  MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=" \
+    "${MINGW_PREFIX}"/bin/cmake.exe \
+      -GNinja \
+      -DCMAKE_INSTALL_PREFIX="${MINGW_PREFIX}" \
+      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+      -DCMAKE_C_COMPILER="clang" \
+      -DCMAKE_CXX_COMPILER="clang++" \
+	  -DOLDABI_COMPAT=ON \
+      -DSTRICT_APPLE_COMPATIBILITY=ON \
+      -DCMAKE_DLL_NAME_WITH_SOVERSION=ON \
+      -DTESTS=OFF \
+      "${extra_config[@]}" \
+      ../${_realname}-${pkgver}
+
+  "${MINGW_PREFIX}"/bin/cmake.exe --build .
+}
+
+check() {
+  cd "${srcdir}/build-${MSYSTEM}"
+  "${MINGW_PREFIX}"/bin/cmake -DTESTS=ON ../${_realname}-${pkgver}
+  "${MINGW_PREFIX}"/bin/cmake --build .
+
+  declare -a extra_flags
+  if [[ ${MSYSTEM} == CLANG* ]]; then
+    extra_flags="-E UnexpectedException*"
+  fi
+
+#  "${MINGW_PREFIX}"/bin/ctest.exe $extra_flags
+}
+
+package() {
+  cd "${srcdir}/build-${MSYSTEM}"
+
+  DESTDIR="${pkgdir}" "${MINGW_PREFIX}"/bin/cmake.exe --install .
+
+  install -Dm644 "${srcdir}/${_realname}-${pkgver}/COPYING" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/COPYING"
+}
