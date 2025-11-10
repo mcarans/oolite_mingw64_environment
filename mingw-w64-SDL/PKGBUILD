@@ -14,7 +14,7 @@ msys2_references=(
   "cpe: cpe:/a:libsdl:simple_directmedia_layer"
 )
 license=("LGPL")
-makedepends=("${MINGW_PACKAGE_PREFIX}-cc" "${MINGW_PACKAGE_PREFIX}-autotools" "git")
+makedepends=("${MINGW_PACKAGE_PREFIX}-cc" "${MINGW_PACKAGE_PREFIX}-autotools" "git" "patch")
 depends=("${MINGW_PACKAGE_PREFIX}-cc-libs" "${MINGW_PACKAGE_PREFIX}-libiconv")
 _commit=5b402cee2da923942fcd4fad42aaebd1185c9c17
 source=("git+https://github.com/libsdl-org/SDL-1.2#commit=${_commit}"

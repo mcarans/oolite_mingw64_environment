@@ -9,7 +9,6 @@ pkgdesc="GNUstep Base library (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
 url='https://gnustep.github.org/'
-msys2_repository_url='https://github.com/gnustep/libs-base'
 msys2_references=(
   "cpe: cpe:/a:gnustep:base"
 )
@@ -31,16 +30,9 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-autotools"
              patch
              patchutils
              rsync)
-source=("${msys2_repository_url}/releases/download/base-${pkgver//./_}/${_realname}-${pkgver}.tar.gz"
-        "0001-gnustep-nsuserdefaults-openstep-format.patch")
-sha256sums=('e7546f1c978a7c75b676953a360194a61e921cb45a4804497b4f346a460545cd'
-            'e1311471be18815d3cb2535f3d104c059dd8bfc18026addd2ba62d6c98382717')
-
-prepare() {
-  echo ":: Applying 0001-gnustep-nsuserdefaults-openstep-format.patch"
-  cd "${_realname}-${pkgver}"
-  patch -p1 -i "${srcdir}"/0001-gnustep-nsuserdefaults-openstep-format.patch
-}
+_commit=2b2ba476d1f133bdf960085a64922f7f471457c1
+source=("git+https://github.com/gnustep/libs-base#commit=${_commit}")
+sha256sums=('459ac251d4a91f56edd90da2cdc9ac5a2df20761a22231dd3ad86a3c0034adce')
 
 build() {
   rsync --recursive --times --links "${srcdir}/${_realname}-${pkgver}"/* "${srcdir}/build-${MSYSTEM}"

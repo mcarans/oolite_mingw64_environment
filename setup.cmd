@@ -30,6 +30,6 @@ set MSYS2_ROOT=%INSTALL_PATH%\msys64
 %MSYS2_ROOT%\usr\bin\bash -lc "pacman -Syu --noconfirm"
 
 echo === Launch MinGW64 shell, build Oolite dependenciesm install Oolite  ===
-%MSYS2_ROOT%\msys2_shell.cmd -mingw64 -defterm -here -no-start -c "./install.sh; exec bash"
+%MSYS2_ROOT%\msys2_shell.cmd -mingw64 -defterm -here -no-start -c "./install.sh gcc; exec bash"
 
 endlocal
