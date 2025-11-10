@@ -64,12 +64,12 @@ pacboy -S openal --noconfirm
 pacboy -S libvorbis --noconfirm
 
 rm -rf oolite
-git clone -b modern_build https://github.com/mcarans/oolite.git
+git clone -b modern_build --filter=blob:none https://github.com/mcarans/oolite.git
 cd oolite
-
 cp .absolute_gitmodules .gitmodules
 git submodule update --init
 git checkout -- .gitmodules
+cd ..
 
 if [[ -z "$1" || "$1" == "clang" ]]; then
 	echo "Building GNUStep libraries with clang"
@@ -82,8 +82,10 @@ if [[ -z "$1" || "$1" == "clang" ]]; then
 	pacman -Q > packages/installed-packages-clang.txt
 	source /mingw64/share/GNUstep/Makefiles/GNUstep.sh
 
+	cd oolite
 	make -f Makefile clean
 	make -f Makefile release -j16
+	cd ..
 fi
 
 if [[ -z "$1" ]]; then
@@ -104,8 +106,10 @@ if [[ -z "$1" || "$1" == "gcc" ]]; then
 	pacman -Q > packages/installed-packages-gcc.txt
 	source /mingw64/share/GNUstep/Makefiles/GNUstep.sh
 
+	cd oolite
 	make -f Makefile clean
 	make -f Makefile release -j16
+	cd ..
 fi
 
 cp /mingw64/share/GNUstep/Makefiles/GNUstep.sh /etc/profile.d/
