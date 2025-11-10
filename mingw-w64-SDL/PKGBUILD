@@ -3,7 +3,7 @@
 _realname=SDL
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
-pkgver=1.2.15+3ed7efe
+pkgver=1.2.15+9569181
 pkgrel=1
 pkgdesc="A library for portable low-level access to a video framebuffer, audio output, mouse, and keyboard (mingw-w64)"
 arch=('any')
@@ -16,9 +16,11 @@ msys2_references=(
 license=("LGPL")
 makedepends=("${MINGW_PACKAGE_PREFIX}-cc" "${MINGW_PACKAGE_PREFIX}-autotools" "git")
 depends=("${MINGW_PACKAGE_PREFIX}-cc-libs" "${MINGW_PACKAGE_PREFIX}-libiconv")
-_commit=e711414dc34263f396d54183c52f9b3f7feecea9 # oolite_changes
-source=("git+https://github.com/OoliteProject/oolite_SDL-1.2#commit=${_commit}")
-sha256sums=('084cab20cc4446e4e84544eed02caa100e643bbcf52291a18087e260c8b880ba')
+_commit=5b402cee2da923942fcd4fad42aaebd1185c9c17
+source=("git+https://github.com/libsdl-org/SDL-1.2#commit=${_commit}"
+        "Oolite_changes.patch")
+sha256sums=('d7962c8ef1282c93d9147da3864a17f552799f8e85c574fadfa557c5f883e8f1'
+            'ca1f233c5ba0ff8d9169d1470d9b010d94cf930185a194d95ca3c115666a06ec')
 
 pkgver() {
   cd "$srcdir/$_gitname"
@@ -27,14 +29,15 @@ pkgver() {
 }
 
 prepare() {
-  cd oolite_SDL-1.2
+  cd SDL-1.2
+  patch -p1 -i ${srcdir}/Oolite_changes.patch
   ./autogen.sh
 }
 
 build() {
   mkdir -p "${srcdir}/build-${MSYSTEM}" && cd "${srcdir}/build-${MSYSTEM}"
 
-  ../oolite_SDL-1.2/configure \
+  ../SDL-1.2/configure \
     --prefix=${MINGW_PREFIX} \
     --build=${MINGW_CHOST} \
     --host=${MINGW_CHOST} \
