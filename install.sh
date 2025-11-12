@@ -2,13 +2,6 @@
 # One parameter gcc = build gcc only (end setup will be for gcc)
 # One parameter clang = build clang only (end setup will be for clang)
 
-pacman -S dos2unix --noconfirm
-pacman -S pactoys --noconfirm
-pacboy -S binutils --noconfirm
-
-rm -rf packages
-mkdir packages
-
 rename() {
 	# First parameter is package name
 	# Second parameter is file pattern
@@ -62,6 +55,13 @@ build_install() {
 	mv $filename ../packages
 	cd ..
 }
+
+pacman -S dos2unix --noconfirm
+pacman -S pactoys --noconfirm
+pacboy -S binutils --noconfirm
+
+rm -rf packages
+mkdir packages
 
 echo "Building common libraries"
 package_names=(spidermonkey pcaudiolib espeak-ng SDL)
