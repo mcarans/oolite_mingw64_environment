@@ -1,5 +1,9 @@
 # Oolite MSYS2 MinGW64 Environment
 
+Creates MSYS2 MinGW64 packages of dependencies that Oolite needs
+
+You can also create an environment locally, building all dependencies, as follows:
+
 Double click Run Me. You will be prompted for an install location. If you type c:, MSYS2 will be installed in c:\msys64. Then Oolite's dependencies will be installed followed by Oolite itself. A gcc build is created by default. 
 
 Once completed, you can type the following in the shell: 

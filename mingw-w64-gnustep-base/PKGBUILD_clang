@@ -1,9 +1,10 @@
 # Maintainer: Frederik Carlier <frederik.carlier@keysight.com>
 
 _realname=gnustep-base
+_gitname=libs-base
 pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
-pkgver=1.31.1
+pkgver=1.31.1+2b2ba476
 pkgrel=4
 pkgdesc="GNUstep Base library (mingw-w64)"
 arch=('any')
@@ -32,11 +33,17 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-autotools"
              rsync)
 
 _commit=2b2ba476d1f133bdf960085a64922f7f471457c1
-source=("git+https://github.com/gnustep/libs-base#commit=${_commit}")
+source=("git+https://github.com/gnustep/${_gitname}#commit=${_commit}")
 sha256sums=('459ac251d4a91f56edd90da2cdc9ac5a2df20761a22231dd3ad86a3c0034adce')
 
+pkgver() {
+  cd "${srcdir}/${_gitname}"
+  # Use short hash
+  printf "%s" "1.31.1+$(git rev-parse --short HEAD)"
+}
+
 build() {
-  rsync --recursive --times --links "${srcdir}/libs-base"/* "${srcdir}/build-${MSYSTEM}"
+  rsync --recursive --times --links "${srcdir}/${_gitname}"/* "${srcdir}/build-${MSYSTEM}"
   cd "${srcdir}/build-${MSYSTEM}"
 
   CC="$MINGW_PREFIX/bin/clang" \
@@ -58,5 +65,5 @@ package() {
 
   make install DESTDIR="${pkgdir}"
 
-  install -Dm644 "${srcdir}/libs-base/COPYING" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/COPYING"
+  install -Dm644 "${srcdir}/${_gitname}/COPYING" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/COPYING"
 }
