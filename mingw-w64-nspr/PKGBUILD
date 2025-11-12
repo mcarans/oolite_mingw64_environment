@@ -1,10 +1,10 @@
 # Maintainer: Michael Rans <rans@email.com>
 
 _realname=nspr
-_reponame=oolite_mozjsnspr_mingw64
+_gitname=oolite_mozjsnspr_mingw64
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
-pkgver=4.38+3ed7efe
+pkgver=4.38+e29556cf
 pkgrel=1
 pkgdesc="Oolite Netscape Portable Runtime"
 arch=('any')
@@ -14,29 +14,29 @@ license=("LGPL")
 makedepends=("${MINGW_PACKAGE_PREFIX}-cc"  "make" "nsinstall" "git")
 depends=("${MINGW_PACKAGE_PREFIX}-cc-libs")
 _commit=e29556cfae84a9a66c338bb58ddd6bf8dad85f98
-source=("git+https://github.com/mcarans/${_reponame}#commit=${_commit}")
+source=("git+https://github.com/mcarans/${_gitname}#commit=${_commit}")
 sha256sums=('198855fd4a7faf2fd04a4a1f29bdb4cd7e065dfc3534bac7b68d5587ab1914b2')
 
 pkgver() {
-  cd "$srcdir/$_gitname"
+  cd "${srcdir}/${_gitname}"
   # Use short hash
   printf "%s" "4.38+$(git rev-parse --short HEAD)"
 }
 
 build() {
-  cd "${srcdir}/${_reponame}/nspr4"
+  cd "${srcdir}/${_gitname}/nspr4"
   ./build_nspr.sh
 }
 
 check() {
-cd "${srcdir}/${_reponame}/nspr4"
+cd "${srcdir}/${_gitname}/nspr4"
   }
 
 package() {
-cd "${srcdir}/${_reponame}/nspr4"
+cd "${srcdir}/${_gitname}/nspr4"
   
   make DESTDIR="${pkgdir}" install
   mv ${pkgdir}${MINGW_PREFIX}/lib/*.dll ${pkgdir}${MINGW_PREFIX}/bin
 
-  install -Dm644 "${srcdir}/${_reponame}/nspr4/LICENSE" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/COPYING" 
+  install -Dm644 "${srcdir}/${_gitname}/nspr4/LICENSE" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/COPYING"
 }

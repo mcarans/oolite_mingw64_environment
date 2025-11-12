@@ -9,32 +9,16 @@ pacboy -S binutils --noconfirm
 rm -rf packages
 mkdir packages
 
-build_install() {
-	# First parameter is package name
-	# Second optional parameter is gcc or clang
-    echo "Building and installing $1 package"
-	cd mingw-w64-$1
-	# Deletes everything except PKGBUILD* and *.patch
-	find . -mindepth 1 ! -name 'PKGBUILD*' ! -name '*.patch' -exec rm -rf {} +
-
+rename() {
     if [ -z "$2" ]; then
 		fullname=$1
     else
-		# copy PKGBUILD_gcc or PKGBUILD_clang to PKGBUILD
 		fullname="${1}_${2}"
-		cp "PKGBUILD_${2}" PKGBUILD
     fi
-	dos2unix PKGBUILD *.patch
-	if ! makepkg -s -f --noconfirm ; then
-	    echo "❌ $1 build failed!"
-	    exit 1
-	fi
-
-	pattern="*$1*any.pkg.tar.zst"
 	# package file eg. mingw-w64-x86_64-libobjc2-2.3-3-any.pkg.tar.zst
-    filename=$(ls $pattern 2>/dev/null)
+    filename=$(ls $3 2>/dev/null)
     if [ -z "$filename" ]; then
-        echo "❌ No file matching $pattern found."
+        echo "❌ No file matching $3 found."
         exit 1
     fi
     if [ "$2" ]; then
@@ -43,7 +27,31 @@ build_install() {
         mv $filename $newname
         filename=$newname
 	fi
-    if ! pacman -U $filename --noconfirm ; then
+
+	echo "${filename}"
+}
+
+build_install() {
+	# First parameter is package name
+	# Second optional parameter is gcc or clang
+    echo "Building and installing $1 package"
+	cd mingw-w64-$1
+	# Deletes everything except PKGBUILD* and *.patch
+	find . -mindepth 1 ! -name 'PKGBUILD*' ! -name '*.patch' -exec rm -rf {} +
+
+    if [ -n "$2" ]; then
+		# copy PKGBUILD_gcc or PKGBUILD_clang to PKGBUILD
+		cp "PKGBUILD_${2}" PKGBUILD
+    fi
+	dos2unix PKGBUILD *.patch
+	if ! makepkg -s -f --noconfirm ; then
+	    echo "❌ $1 build failed!"
+	    exit 1
+	fi
+
+	filename=$(rename $1 $2 "*$1*any.pkg.tar.zst")
+
+	if ! pacman -U $filename --noconfirm ; then
 	    echo "❌ $filename install failed!"
 	    exit 1
 	fi
