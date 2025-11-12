@@ -18,7 +18,6 @@ rename() {
     else
 		fullname="${1}_${3}"
     fi
-	# package file eg. mingw-w64-x86_64-libobjc2-2.3-3-any.pkg.tar.zst
     filename=$(ls $2 2>/dev/null)
     if [ -z "$filename" ]; then
         echo "❌ No file matching $3 found."
@@ -31,7 +30,7 @@ rename() {
         filename=$newname
 	fi
 
-	echo "${filename}"
+	echo "${filename}" "${fullname}"
 }
 
 build_install() {
@@ -52,7 +51,8 @@ build_install() {
 	    exit 1
 	fi
 
-	filename=$(rename $1 "*$1*any.pkg.tar.zst" $2)
+	# package file eg. mingw-w64-x86_64-libobjc2-2.3-3-any.pkg.tar.zst
+	read filename fullname <<< "$(rename $1 "*$1*any.pkg.tar.zst" $2)"
 
 	if ! pacman -U $filename --noconfirm ; then
 	    echo "❌ $filename install failed!"
