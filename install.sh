@@ -10,18 +10,21 @@ rm -rf packages
 mkdir packages
 
 rename() {
-    if [ -z "$2" ]; then
+	# First parameter is package name
+	# Second parameter is file pattern
+	# Third optional parameter is gcc or clang
+    if [ -z "$3" ]; then
 		fullname=$1
     else
-		fullname="${1}_${2}"
+		fullname="${1}_${3}"
     fi
 	# package file eg. mingw-w64-x86_64-libobjc2-2.3-3-any.pkg.tar.zst
-    filename=$(ls $3 2>/dev/null)
+    filename=$(ls $2 2>/dev/null)
     if [ -z "$filename" ]; then
         echo "❌ No file matching $3 found."
         exit 1
     fi
-    if [ "$2" ]; then
+    if [ "$3" ]; then
 		# add gcc or clang to filename
         newname="${filename/$1/$fullname}"
         mv $filename $newname
@@ -49,7 +52,7 @@ build_install() {
 	    exit 1
 	fi
 
-	filename=$(rename $1 $2 "*$1*any.pkg.tar.zst")
+	filename=$(rename $1 "*$1*any.pkg.tar.zst" $2)
 
 	if ! pacman -U $filename --noconfirm ; then
 	    echo "❌ $filename install failed!"
