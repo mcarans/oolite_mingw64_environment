@@ -17,7 +17,6 @@ rename() {
         exit 1
     fi
     if [ "$3" ]; then
-		# add gcc or clang to filename
         newname="${filename/$1/$fullname}"
         mv $filename $newname
         filename=$newname
@@ -88,6 +87,7 @@ if [[ -z "$1" || "$1" == "clang" ]]; then
 	export cpp=/mingw64/bin/clang++
 	clang_package_names=(libobjc2 gnustep-make gnustep-base)
 	for packagename in "${clang_package_names[@]}"; do
+		# add clang to filename
 		build_install $packagename clang
 	done
 	pacman -Q > packages/installed-packages-clang.txt
@@ -112,6 +112,7 @@ if [[ -z "$1" || "$1" == "gcc" ]]; then
 	export cpp=/mingw64/bin/g++
 	gcc_package_names=(gnustep-make gnustep-base)
 	for packagename in "${gcc_package_names[@]}"; do
+		# add gcc to filename
 		build_install $packagename gcc
 	done
 	pacman -Q > packages/installed-packages-gcc.txt
