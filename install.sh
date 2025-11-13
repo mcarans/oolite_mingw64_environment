@@ -13,7 +13,7 @@ rename() {
     fi
     filename=$(ls $2 2>/dev/null)
     if [ -z "$filename" ]; then
-        echo "❌ No file matching $2 found."
+        echo "❌ No file matching $2 found." >&2
         exit 1
     fi
     if [ "$3" ]; then
@@ -39,7 +39,7 @@ build_install() {
     fi
 	dos2unix PKGBUILD *.patch
 	if ! makepkg -s -f --noconfirm ; then
-	    echo "❌ $1 build failed!"
+	    echo "❌ $1 build failed!" >&2
 	    exit 1
 	fi
 
@@ -47,7 +47,7 @@ build_install() {
 	read filename fullname <<< "$(rename $1 "*$1*any.pkg.tar.zst" $2)"
 
 	if ! pacman -U $filename --noconfirm ; then
-	    echo "❌ $filename install failed!"
+	    echo "❌ $filename install failed!" >&2
 	    exit 1
 	fi
 	rm -f ../packages/*$fullname*any.pkg.tar.zst
@@ -95,7 +95,12 @@ if [[ -z "$1" || "$1" == "clang" ]]; then
 
 	cd oolite
 	make -f Makefile clean
-	make -f Makefile release -j16
+	if make -f Makefile release -j16; then
+		echo "✅ Oolite build completed successfully"
+	else
+		echo "❌ Oolite build failed" >&2
+		exit 1
+	fi
 	cd ..
 fi
 
@@ -120,7 +125,12 @@ if [[ -z "$1" || "$1" == "gcc" ]]; then
 
 	cd oolite
 	make -f Makefile clean
-	make -f Makefile release -j16
+	if make -f Makefile release -j16; then
+		echo "✅ Oolite build completed successfully"
+	else
+		echo "❌ Oolite build failed" >&2
+		exit 1
+	fi
 	cd ..
 fi
 
