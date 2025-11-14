@@ -84,7 +84,7 @@ cd ..
 if [[ -z "$1" || "$1" == "clang" ]]; then
 	echo "Building GNUStep libraries with clang"
 	export cc=/mingw64/bin/clang
-	export cpp=/mingw64/bin/clang++
+	export cxx=/mingw64/bin/clang++
 	clang_package_names=(libobjc2 gnustep-make gnustep-base)
 	for packagename in "${clang_package_names[@]}"; do
 		# add clang to filename
@@ -114,7 +114,7 @@ fi
 if [[ -z "$1" || "$1" == "gcc" ]]; then
 	echo "Building GNUStep libraries with gcc"
 	export cc=/mingw64/bin/gcc
-	export cpp=/mingw64/bin/g++
+	export cxx=/mingw64/bin/g++
 	gcc_package_names=(gnustep-make gnustep-base)
 	for packagename in "${gcc_package_names[@]}"; do
 		# add gcc to filename
