@@ -8,6 +8,9 @@ echo Running in: %CD%
 :: Prompt the user for a path
 set /p INSTALL_PATH=Enter the installation path: 
 
+:: Prompt the user for whether to install gcc or clang
+set /p GCC_OR_CLANG=Enter compiler to use - gcc or clang: 
+
 :: Where to download installer
 set MSYS2_URL=https://github.com/msys2/msys2-installer/releases/latest/download/msys2-base-x86_64-latest.sfx.exe
 set INSTALLER=%TEMP%\msys2-base.sfx.exe
@@ -30,6 +33,6 @@ set MSYS2_ROOT=%INSTALL_PATH%\msys64
 %MSYS2_ROOT%\usr\bin\bash -lc "pacman -Syu --noconfirm"
 
 echo === Launch MinGW64 shell, build Oolite dependencies install Oolite  ===
-%MSYS2_ROOT%\msys2_shell.cmd -mingw64 -defterm -here -no-start -c "./install.sh gcc; exec bash"
+%MSYS2_ROOT%\msys2_shell.cmd -mingw64 -defterm -here -no-start -c "./install.sh %GCC_OR_CLANG%; exec bash"
 
 endlocal
