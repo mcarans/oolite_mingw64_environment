@@ -21,7 +21,7 @@ _commit=5b402cee2da923942fcd4fad42aaebd1185c9c17
 source=("git+https://github.com/libsdl-org/${_gitname}#commit=${_commit}"
         "Oolite_changes.patch")
 sha256sums=('d7962c8ef1282c93d9147da3864a17f552799f8e85c574fadfa557c5f883e8f1'
-            'ca1f233c5ba0ff8d9169d1470d9b010d94cf930185a194d95ca3c115666a06ec')
+            '8f96b0ead4a2f3de47160a3b77134e2bb23d456fe35b70ce72f20b547bbc8d82')
 
 pkgver() {
   cd "${srcdir}/${_gitname}"
