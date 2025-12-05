@@ -58,8 +58,6 @@ build_install() {
 pacman -S dos2unix --noconfirm
 pacman -S pactoys --noconfirm
 pacboy -S binutils --noconfirm
-pacboy -S pcaudiolib --noconfirm 
-pacboy -S espeak-ng --noconfirm
 
 rm -rf packages
 mkdir packages
@@ -74,6 +72,7 @@ pacman -S git --noconfirm
 pacboy -S libpng --noconfirm
 pacboy -S openal --noconfirm
 pacboy -S libvorbis --noconfirm
+pacboy -S pcaudiolib --noconfirm 
 pacboy -S espeak-ng --noconfirm
 
 rm -rf oolite
