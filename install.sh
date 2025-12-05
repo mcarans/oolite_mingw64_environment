@@ -85,15 +85,15 @@ cd ..
 
 if [[ -z "$1" || "$1" == "clang" ]]; then
 	echo "Building GNUStep libraries with clang"
-	export cc=/mingw64/bin/clang
-	export cxx=/mingw64/bin/clang++
+	export cc=/$MINGW_PREFIX/bin/clang
+	export cxx=/$MINGW_PREFIX/bin/clang++
 	clang_package_names=(libobjc2 gnustep-make gnustep-base)
 	for packagename in "${clang_package_names[@]}"; do
 		# add clang to filename
 		build_install $packagename clang
 	done
 	pacman -Q > packages/installed-packages-clang.txt
-	source /mingw64/share/GNUstep/Makefiles/GNUstep.sh
+	source /$MINGW_PREFIX/share/GNUstep/Makefiles/GNUstep.sh
 
 	cd oolite
 	make -f Makefile clean
@@ -115,15 +115,15 @@ fi
 
 if [[ -z "$1" || "$1" == "gcc" ]]; then
 	echo "Building GNUStep libraries with gcc"
-	export cc=/mingw64/bin/gcc
-	export cxx=/mingw64/bin/g++
+	export cc=/$MINGW_PREFIX/bin/gcc
+	export cxx=/$MINGW_PREFIX/bin/g++
 	gcc_package_names=(gnustep-make gnustep-base)
 	for packagename in "${gcc_package_names[@]}"; do
 		# add gcc to filename
 		build_install $packagename gcc
 	done
 	pacman -Q > packages/installed-packages-gcc.txt
-	source /mingw64/share/GNUstep/Makefiles/GNUstep.sh
+	source /$MINGW_PREFIX/share/GNUstep/Makefiles/GNUstep.sh
 
 	cd oolite
 	make -f Makefile clean
@@ -136,7 +136,7 @@ if [[ -z "$1" || "$1" == "gcc" ]]; then
 	cd ..
 fi
 
-cp /mingw64/share/GNUstep/Makefiles/GNUstep.sh /etc/profile.d/
+cp /$MINGW_PREFIX/share/GNUstep/Makefiles/GNUstep.sh /etc/profile.d/
 
 if ! grep -q "# Custom history settings" ~/.bashrc; then
   cat >> ~/.bashrc <<'EOF'
