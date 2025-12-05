@@ -1,0 +1,1 @@
+We use MSYS2 MinGW64 standard espeak-ng package instead.

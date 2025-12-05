@@ -58,12 +58,14 @@ build_install() {
 pacman -S dos2unix --noconfirm
 pacman -S pactoys --noconfirm
 pacboy -S binutils --noconfirm
+pacboy -S pcaudiolib --noconfirm 
+pacboy -S espeak-ng --noconfirm
 
 rm -rf packages
 mkdir packages
 
 echo "Building common libraries"
-package_names=(spidermonkey pcaudiolib espeak-ng SDL)
+package_names=(spidermonkey SDL)
 for packagename in "${package_names[@]}"; do
 	build_install $packagename
 done
@@ -72,6 +74,7 @@ pacman -S git --noconfirm
 pacboy -S libpng --noconfirm
 pacboy -S openal --noconfirm
 pacboy -S libvorbis --noconfirm
+pacboy -S espeak-ng --noconfirm
 
 rm -rf oolite
 git clone -b modern_build --filter=blob:none https://github.com/mcarans/oolite.git
