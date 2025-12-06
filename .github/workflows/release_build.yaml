@@ -31,6 +31,12 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Uninstall MINGW64 packages
+      shell: msys2 {0}
+      run: |
+        # Remove all mingw64 packages to avoid mixing
+        pacman -Rns --noconfirm $(pacman -Qq | grep '^mingw-w64-x86_64-')
+
     - name: Install clang
       shell: msys2 {0}
       env:
