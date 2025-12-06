@@ -59,8 +59,7 @@ pacman -S dos2unix --noconfirm
 pacman -S pactoys --noconfirm
 pacboy -S binutils --noconfirm
 
-rm -rf packages
-mkdir packages
+mkdir - p packages
 
 echo "Building common libraries"
 package_names=(spidermonkey SDL)
