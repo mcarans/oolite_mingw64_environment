@@ -2,7 +2,7 @@ name: Release Oolite packages
 
 on:
   release:
-    types: [created]   # Trigger only when a new release is created
+    types: [published]   # Trigger only when a new release is published
 permissions:
   contents: write
 jobs:
