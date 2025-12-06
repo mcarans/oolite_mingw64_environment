@@ -8,8 +8,8 @@ echo Running in: %CD%
 :: Prompt the user for a path
 set /p INSTALL_PATH=Enter the installation path: 
 
-:: Prompt the user for whether to install gcc or clang
-set /p GCC_OR_CLANG=Enter compiler to use - gcc or clang: 
+:: Prompt the user for UCRT64 Clang or MinGW64 GCC
+set /p UCRT_CLANG_OR_MINGW_GCC=Enter 1 for UCRT64 Clang or 2 for MinGW64 GCC: 
 
 :: Where to download installer
 set MSYS2_URL=https://github.com/msys2/msys2-installer/releases/latest/download/msys2-base-x86_64-latest.sfx.exe
@@ -32,7 +32,12 @@ set MSYS2_ROOT=%INSTALL_PATH%\msys64
 %MSYS2_ROOT%\usr\bin\bash -lc "pacman -Sy --noconfirm pacman"
 %MSYS2_ROOT%\usr\bin\bash -lc "pacman -Syu --noconfirm"
 
-echo === Launch MinGW64 shell, build Oolite dependencies install Oolite  ===
-%MSYS2_ROOT%\msys2_shell.cmd -mingw64 -defterm -here -no-start -c "./install.sh %GCC_OR_CLANG%; exec bash"
+if "%UCRT_CLANG_OR_MINGW_GCC%"=="1" (
+    echo === Launch UCRT64 shell, install Oolite dependencies and build Oolite with Clang  ===
+	%MSYS2_ROOT%\msys2_shell.cmd -ucrt64 -defterm -here -no-start -c "./install.sh clang; exec bash"
+) else (
+    echo === Launch MinGW64 shell, install Oolite dependencies and build Oolite with GCC  ===
+	%MSYS2_ROOT%\msys2_shell.cmd -mingw64 -defterm -here -no-start -c "./install.sh gcc; exec bash"	
+)
 
 endlocal
