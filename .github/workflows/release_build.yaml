@@ -62,7 +62,7 @@ jobs:
       if: failure()
       env:
         GITHUB_REF_NAME: ${{ github.event.release.tag_name }}
-        GH_TOKEN: ${{ github.token }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         # Delete the release and tag
         gh release delete "$GITHUB_REF_NAME" --cleanup-tag --yes
