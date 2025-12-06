@@ -85,58 +85,39 @@ cd ..
 
 if [[ -z "$1" || "$1" == "clang" ]]; then
 	echo "Building GNUStep libraries with clang"
-	export cc=/$MINGW_PREFIX/bin/clang
-	export cxx=/$MINGW_PREFIX/bin/clang++
+	export cc=$MINGW_PREFIX/bin/clang
+	export cxx=$MINGW_PREFIX/bin/clang++
 	clang_package_names=(libobjc2 gnustep-make gnustep-base)
 	for packagename in "${clang_package_names[@]}"; do
 		# add clang to filename
 		build_install $packagename clang
 	done
 	pacman -Q > packages/installed-packages-clang.txt
-	source /$MINGW_PREFIX/share/GNUstep/Makefiles/GNUstep.sh
-
-	cd oolite
-	make -f Makefile clean
-	if make -f Makefile release -j16; then
-		echo "✅ Oolite build completed successfully"
-	else
-		echo "❌ Oolite build failed" >&2
-		exit 1
-	fi
-	cd ..
-fi
-
-if [[ -z "$1" ]]; then
-	echo "Uninstalling clang GNUStep libraries"
-	pacboy -R gnustep-base
-	pacboy -R gnustep-make
-	pacboy -R libobjc2
-fi
-
-if [[ -z "$1" || "$1" == "gcc" ]]; then
+else
 	echo "Building GNUStep libraries with gcc"
-	export cc=/$MINGW_PREFIX/bin/gcc
-	export cxx=/$MINGW_PREFIX/bin/g++
+	export cc=$MINGW_PREFIX/bin/gcc
+	export cxx=$MINGW_PREFIX/bin/g++
 	gcc_package_names=(gnustep-make gnustep-base)
 	for packagename in "${gcc_package_names[@]}"; do
 		# add gcc to filename
 		build_install $packagename gcc
 	done
 	pacman -Q > packages/installed-packages-gcc.txt
-	source /$MINGW_PREFIX/share/GNUstep/Makefiles/GNUstep.sh
-
-	cd oolite
-	make -f Makefile clean
-	if make -f Makefile release -j16; then
-		echo "✅ Oolite build completed successfully"
-	else
-		echo "❌ Oolite build failed" >&2
-		exit 1
-	fi
-	cd ..
 fi
 
-cp /$MINGW_PREFIX/share/GNUstep/Makefiles/GNUstep.sh /etc/profile.d/
+source $MINGW_PREFIX/share/GNUstep/Makefiles/GNUstep.sh
+
+cd oolite
+make -f Makefile clean
+if make -f Makefile release -j16; then
+	echo "✅ Oolite build completed successfully"
+else
+	echo "❌ Oolite build failed" >&2
+	exit 1
+fi
+cd ..
+
+echo 'source $MINGW_PREFIX/share/GNUstep/Makefiles/GNUstep.sh' > /etc/profile.d/GNUstep.sh
 
 if ! grep -q "# Custom history settings" ~/.bashrc; then
   cat >> ~/.bashrc <<'EOF'
