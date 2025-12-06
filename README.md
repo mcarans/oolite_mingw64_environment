@@ -10,3 +10,5 @@ Once completed, you can type the following in the shell:
 
     cd oolite/oolite.app
 	./oolite.exe
+
+If you subsequently wish to try the other environment/compiler combination, open the environment's shell and then run install.sh passing parameter gcc or clang as appropriate.
