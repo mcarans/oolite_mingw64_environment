@@ -4,7 +4,7 @@ _realname=spidermonkey
 _gitname=oolite_mozjsnspr_mingw64
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
-pkgver=4+e29556c
+pkgver=4+c2714c5
 pkgrel=1
 pkgdesc="Oolite Spidermonkey"
 arch=('any')
@@ -13,9 +13,9 @@ url="https://github.com/mcarans/oolite_mozjsnspr_mingw64"
 license=("LGPL")
 makedepends=("${MINGW_PACKAGE_PREFIX}-cc" "make" "nsinstall" "git")
 depends=("${MINGW_PACKAGE_PREFIX}-cc-libs" "${MINGW_PACKAGE_PREFIX}-nspr")
-_commit=e29556cfae84a9a66c338bb58ddd6bf8dad85f98
+_commit=c2714c5fb3481192ad8064e802b2f48144d68130
 source=("git+https://github.com/mcarans/${_gitname}#commit=${_commit}")
-sha256sums=('198855fd4a7faf2fd04a4a1f29bdb4cd7e065dfc3534bac7b68d5587ab1914b2')
+sha256sums=('db1ce56abf3397c7b6837fa94523a5785c36a6c9a1e62e262d23bd51b357e48a')
 
 pkgver() {
   cd "${srcdir}/${_gitname}"
