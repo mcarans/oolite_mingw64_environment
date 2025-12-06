@@ -1,4 +1,4 @@
-# Oolite MSYS2 Package Dependency Maker and Full Local Build from Source
+# Oolite MSYS2 Package Dependency Builder and Full Local Build from Source
 
 Creates MSYS2 UCRT64 Clang or MinGW64 GCC packages of dependencies that Oolite needs. The GitHub Action creates a UCRT64 Clang build followed by a MinGW64 GCC build and puts the packages into the release on GitHub.
 
