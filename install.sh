@@ -76,7 +76,7 @@ pacboy -S pcaudiolib --noconfirm
 pacboy -S espeak-ng --noconfirm
 
 rm -rf oolite
-git clone -b modern_build --filter=blob:none https://github.com/mcarans/oolite.git
+git clone --filter=blob:none https://github.com/OoliteProject/oolite.git
 cd oolite
 cp .absolute_gitmodules .gitmodules
 git submodule update --init
