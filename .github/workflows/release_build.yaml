@@ -2,67 +2,55 @@ name: Release Oolite packages
 
 on:
   release:
-    types: [published]   # Trigger only when a new release is published
+    types: [published]
+
 permissions:
   contents: write
+
 jobs:
-  run:
+  build-and-release:
     runs-on: windows-2025
+    strategy:
+      fail-fast: true  # If Clang fails, GCC stops too
+      matrix:
+        compiler: [clang, gcc]
+        include:
+          - compiler: clang
+            msystem_type: UCRT64
+          - compiler: gcc
+            msystem_type: MINGW64
 
     steps:
     - uses: actions/checkout@v6
+
     - name: Set up MSYS2
       uses: msys2/setup-msys2@v2
       with:
         update: true
-        
-    - name: Install clang
+
+    - name: Build Oolite Package
       shell: msys2 {0}
       env:
-        msystem: UCRT64
+        msystem: ${{ matrix.msystem_type }}
       run: |
-        ./install.sh clang
-    # Upload artifacts to the release
+        ./install.sh ${{ matrix.compiler }}
+
     - name: Upload to GitHub Release
-      if: success()
       uses: softprops/action-gh-release@v2
       with:
         files: packages/*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Uninstall UCRT64 packages
-      shell: msys2 {0}
-      run: |
-        # Remove all UCRT64 packages to avoid mixing
-        pacman -Rns --noconfirm $(pacman -Qq | grep '^mingw-w64-ucrt-x86_64-')
-
-    - name: Install gcc
-      shell: msys2 {0}
-      env:
-        msystem: MINGW64
-      run: |
-        ./install.sh gcc
-    # Upload artifacts to the release
-    - name: Upload to GitHub Release
-      if: success()
-      uses: softprops/action-gh-release@v2
-      with:
-        files: packages/*
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Install gh on failure
-      if: failure()
-      run: |
-        # Install GitHub CLI
-        choco install gh -y
-
-    - name: Delete release and tag on failure
-      if: failure()
-      env:
-        GITHUB_REF_NAME: ${{ github.event.release.tag_name }}
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        # Delete the release and tag
-        gh release delete "$GITHUB_REF_NAME" --cleanup-tag --yes
+  # Separate job to clean up if ANYTHING fails
+  cleanup-on-failure:
+    needs: build-and-release
+    if: failure()
+    runs-on: ubuntu-latest # Faster/cheaper for simple API calls
+    steps:
+      - name: Delete release and tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          gh release delete "$TAG" --repo ${{ github.repository }} --cleanup-tag --yes

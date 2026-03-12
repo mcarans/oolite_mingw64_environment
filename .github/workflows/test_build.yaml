@@ -1,46 +1,40 @@
 name: Test build Oolite packages
 
 on:
-  workflow_dispatch: # add run button in github
+  workflow_dispatch:
+
 jobs:
-  run:
+  build:
     runs-on: windows-2025
+    strategy:
+      matrix:
+        # This creates two separate jobs that run in parallel
+        compiler: [clang, gcc]
+        include:
+          - compiler: clang
+            env_msystem: UCRT64
+          - compiler: gcc
+            env_msystem: MINGW64
 
     steps:
     - uses: actions/checkout@v6
+
     - name: Set up MSYS2
       uses: msys2/setup-msys2@v2
       with:
         update: true
 
-    - name: Install clang
+    - name: Build Oolite
       shell: msys2 {0}
       env:
-        msystem: UCRT64
+        msystem: ${{ matrix.env_msystem }}
       run: |
-        ./install.sh clang
-    - name: Upload folder contents as artifact
+        ./install.sh ${{ matrix.compiler }}
+
+    - name: Upload artifacts
       if: success()
       uses: actions/upload-artifact@v4
       with:
-        name: build-artifacts
-        path: packages/**
-
-    - name: Uninstall UCRT64 packages
-      shell: msys2 {0}
-      run: |
-        # Remove all UCRT64 packages to avoid mixing
-        pacman -Rns --noconfirm $(pacman -Qq | grep '^mingw-w64-ucrt-x86_64-')
-
-    - name: Install gcc
-      shell: msys2 {0}
-      env:
-        msystem: MINGW64
-      run: |
-        ./install.sh gcc
-    - name: Upload folder contents as artifact
-      if: success()
-      uses: actions/upload-artifact@v4
-      with:
-        name: build-artifacts
+        # Uses the compiler name to keep artifact names unique
+        name: oolite-build-${{ matrix.compiler }}
         path: packages/**
