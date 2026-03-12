@@ -24,6 +24,12 @@ _commit=62e3a80b8e93818c2ac3250beab211c4d294cc87
 source=("git+https://github.com/gnustep/${_realname}#commit=${_commit}")			 
 sha256sums=('SKIP')
 
+pkgver() {
+  cd "${srcdir}/${_gitname}"
+  # Use short hash
+  printf "%s" "2.3+$(git rev-parse --short HEAD)"
+}
+
 build() {
   mkdir -p "${srcdir}/build-${MSYSTEM}" && cd "${srcdir}/build-${MSYSTEM}"
 

@@ -19,11 +19,16 @@ _commit=50cf9619e672fb2ff6825f239b5a172c5dc55630
 source=("git+https://github.com/gnustep/${_gitname}#commit=${_commit}")
 sha256sums=('SKIP')
 
+pkgver() {
+  cd "${srcdir}/${_gitname}"
+  # Use short hash
+  printf "%s" "2.9.3+$(git rev-parse --short HEAD)"
+}
+
 build() {
-  cd "${srcdir}/${_realname}-${pkgver}"
   mkdir -p "${srcdir}/build-${MSYSTEM}" && cd "${srcdir}/build-${MSYSTEM}"
 
-  ../"${_realname}-${pkgver}"/configure \
+  ../"${_gitname}"/configure \
     --enable-native-objc-exceptions \
     --with-library-combo=gnu-gnu-gnu \
     --prefix="${MINGW_PREFIX}" \
@@ -43,5 +48,5 @@ package() {
 
   make install DESTDIR="${pkgdir}"
 
-  install -Dm644 "${srcdir}/${_realname}-${pkgver}/COPYING" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/COPYING"
+  install -Dm644 "${srcdir}/${_gitname}/COPYING" "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/COPYING"
 }
