@@ -20,9 +20,9 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-cmake"
              "${MINGW_PACKAGE_PREFIX}-robin-map"
              'git')
 
-_commit=e5c06e3be8895007bcc7be58cbeccac2a5a89eff
+_commit=62e3a80b8e93818c2ac3250beab211c4d294cc87
 source=("git+https://github.com/gnustep/${_realname}#commit=${_commit}")			 
-sha256sums=('fcf4479e8006df13dcf11af8a625b6c47a72b638ad228582ac64c6a6636babaa')
+sha256sums=('SKIP')
 
 build() {
   mkdir -p "${srcdir}/build-${MSYSTEM}" && cd "${srcdir}/build-${MSYSTEM}"
