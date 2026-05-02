@@ -4,8 +4,8 @@ _realname=gnustep-base
 _gitname=libs-base
 pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
-pkgver=1.31.1+2b2ba476
-pkgrel=5
+pkgver=1.31.1+f68a5738d
+pkgrel=1
 pkgdesc="GNUstep Base library (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
@@ -32,7 +32,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-autotools"
              patchutils
              rsync)
 
-_commit=530ac3454f9c8af315d823736252cb45221943c1
+_commit=f68a5738d804696c4f0a8bdcb4ab09451e07bfe6
 source=("git+https://github.com/gnustep/${_gitname}#commit=${_commit}")
 sha256sums=('SKIP')
 
@@ -46,14 +46,14 @@ build() {
   rsync --recursive --times --links "${srcdir}/${_gitname}"/* "${srcdir}/build-${MSYSTEM}"
   cd "${srcdir}/build-${MSYSTEM}"
 
-  CC="$MINGW_PREFIX/bin/clang" \
-  CXX="$MINGW_PREFIX/bin/clang++" \
-  ./configure \
-    --prefix="${MINGW_PREFIX}"
+  export CC="$MINGW_PREFIX/bin/clang"
+  export CXX="$MINGW_PREFIX/bin/clang++"
+  export CFLAGS="$CFLAGS -DSTRICT_APPLE_COMPATIBILITY=1 -Wno-incompatible-pointer-types"
 
-  CC="$MINGW_PREFIX/bin/clang" \
-  CXX="$MINGW_PREFIX/bin/clang++" \
+  ./configure --prefix="${MINGW_PREFIX}"
+
   make
+
 }
 
 check() {

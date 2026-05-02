@@ -6,8 +6,8 @@ pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 if [[ ${MSYSTEM} != CLANG* ]]; then
   conflicts=("${MINGW_PACKAGE_PREFIX}-gcc-objc")
 fi
-pkgver=2.3
-pkgrel=3
+pkgver=2.3+a94193b
+pkgrel=1
 pkgdesc="Objective-C runtime library intended for use with Clang. (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
@@ -20,7 +20,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-cmake"
              "${MINGW_PACKAGE_PREFIX}-robin-map"
              'git')
 
-_commit=b67709ad7851973fde127022d8ac6a710c82b1d5
+_commit=fe3b225029f50fc3140bfa9d7d98690d1c6f490c
 source=("git+https://github.com/gnustep/${_realname}#commit=${_commit}")			 
 sha256sums=('SKIP')
 

@@ -4,7 +4,7 @@ _realname=gnustep-make
 _gitname=tools-make
 pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
-pkgver=2.9.3
+pkgver=2.9.3+50cf9619
 pkgrel=1
 pkgdesc="GNUstep build system (mingw-w64)"
 arch=('any')
@@ -31,16 +31,17 @@ build() {
   # libobjc2 defers exception handling to the C++ library, so link with a C++ library
   case ${MSYSTEM} in
     MINGW*|UCRT*)
-      export LDFLAGS="-fuse-ld=lld -lstdc++ -lgcc_s"
+      export LDFLAGS="$LDFLAGS -fuse-ld=lld -lstdc++ -lgcc_s"
       ;;
     CLANG*)
-      export LDFLAGS="-Wl,--no-whole-archive -lc++"
+      export LDFLAGS="$LDFLAGS -Wl,--no-whole-archive -lc++"
       ;;
   esac
 
-  CFLAGS+=" -DSTRICT_APPLE_COMPATIBILITY=1" \
-  CC="$MINGW_PREFIX/bin/clang" \
-  CXX="$MINGW_PREFIX/bin/clang++" \
+  export CC="$MINGW_PREFIX/bin/clang"
+  export CXX="$MINGW_PREFIX/bin/clang++"
+  export CFLAGS="$CFLAGS -DSTRICT_APPLE_COMPATIBILITY=1 -Wno-incompatible-pointer-types"
+
   ../"${_gitname}"/configure \
     --with-library-combo=ng-gnu-gnu \
     --with-runtime-abi=gnustep-2.2 \
