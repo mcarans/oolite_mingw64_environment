@@ -31,7 +31,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-autotools"
              patch
              patchutils
              rsync)
-_commit=f1c0febc88f5301f62f7e7bc67e8ec55ad3715f8
+_commit=f68a5738d804696c4f0a8bdcb4ab09451e07bfe6
 source=("git+https://github.com/gnustep/${_gitname}#commit=${_commit}")
 sha256sums=('SKIP')
 
