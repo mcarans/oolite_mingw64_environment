@@ -4,7 +4,7 @@ _realname=gnustep-make
 _gitname=tools-make
 pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
-pkgver=2.9.3+50cf9619
+pkgver=2.9.3+97b568f1
 pkgrel=1
 pkgdesc="GNUstep build system (mingw-w64)"
 arch=('any')
@@ -15,7 +15,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-autotools"
              "${MINGW_PACKAGE_PREFIX}-clang"
              "${MINGW_PACKAGE_PREFIX}-lld"
              "${MINGW_PACKAGE_PREFIX}-libobjc2")
-_commit=50cf9619e672fb2ff6825f239b5a172c5dc55630
+_commit=97b568f19c4165827979348951066622f75ef6e5
 source=("git+https://github.com/gnustep/${_gitname}#commit=${_commit}")
 sha256sums=('SKIP')
 
@@ -40,7 +40,7 @@ build() {
 
   export CC="$MINGW_PREFIX/bin/clang"
   export CXX="$MINGW_PREFIX/bin/clang++"
-  export CFLAGS="$CFLAGS -DSTRICT_APPLE_COMPATIBILITY=1 -Wno-incompatible-pointer-types"
+  export CFLAGS="$CFLAGS -DSTRICT_APPLE_COMPATIBILITY=1"
 
   ../"${_gitname}"/configure \
     --with-library-combo=ng-gnu-gnu \

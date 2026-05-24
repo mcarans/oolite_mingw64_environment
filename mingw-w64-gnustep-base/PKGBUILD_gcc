@@ -4,7 +4,7 @@ _realname=gnustep-base
 _gitname=libs-base
 pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
-pkgver=1.31.1+2b2ba476
+pkgver=1.31.1+7a5990974e
 pkgrel=5
 pkgdesc="GNUstep Base library (mingw-w64)"
 arch=('any')
@@ -31,7 +31,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-autotools"
              patch
              patchutils
              rsync)
-_commit=f68a5738d804696c4f0a8bdcb4ab09451e07bfe6
+_commit=7a5990974efdc0175249c4d0b6f831b4a11d76d6
 source=("git+https://github.com/gnustep/${_gitname}#commit=${_commit}")
 sha256sums=('SKIP')
 
