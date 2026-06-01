@@ -1,0 +1,1 @@
+SDL1.2 is no longer used. We use MSYS2 UCRT64 or MinGW64 standard SDL3 package instead.
