@@ -63,7 +63,7 @@ rm -rf packages
 mkdir packages
 
 echo "Building common libraries"
-package_names=(spidermonkey SDL)
+package_names=(spidermonkey)
 for packagename in "${package_names[@]}"; do
 	build_install $packagename
 done
@@ -74,6 +74,8 @@ pacboy -S openal --noconfirm
 pacboy -S libvorbis --noconfirm
 pacboy -S pcaudiolib --noconfirm 
 pacboy -S espeak-ng --noconfirm
+pacboy -S sdl3 --noconfirm
+
 
 rm -rf oolite
 git clone --filter=blob:none https://github.com/OoliteProject/oolite.git
