@@ -107,19 +107,15 @@ else
 	pacman -Q > packages/installed-packages-gcc.txt
 fi
 
-source $MINGW_PREFIX/share/GNUstep/Makefiles/GNUstep.sh
-
 cd oolite
-make -f Makefile clean
-if make -f Makefile release -j16; then
+make clean
+if make release; then
 	echo "✅ Oolite build completed successfully"
 else
 	echo "❌ Oolite build failed" >&2
 	exit 1
 fi
 cd ..
-
-echo 'source $MINGW_PREFIX/share/GNUstep/Makefiles/GNUstep.sh' > /etc/profile.d/GNUstep.sh
 
 if ! grep -q "# Custom history settings" ~/.bashrc; then
   cat >> ~/.bashrc <<'EOF'
