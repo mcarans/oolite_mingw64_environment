@@ -96,6 +96,7 @@ if [[ -z "$1" || "$1" == "clang" ]]; then
 		build_install $packagename clang
 	done
 	pacman -Q > packages/installed-packages-clang.txt
+	native_file="clang.ini"
 else
 	echo "Building GNUStep libraries with gcc"
 	export cc=$MINGW_PREFIX/bin/gcc
@@ -106,11 +107,12 @@ else
 		build_install $packagename gcc
 	done
 	pacman -Q > packages/installed-packages-gcc.txt
+	native_file="gcc.ini"
 fi
 
 cd oolite
 make clean
-if make release; then
+if make release NATIVE_FILE="$native_file"; then
 	echo "✅ Oolite build completed successfully"
 else
 	echo "❌ Oolite build failed" >&2
