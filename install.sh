@@ -75,7 +75,8 @@ pacboy -S libvorbis --noconfirm
 pacboy -S pcaudiolib --noconfirm 
 pacboy -S espeak-ng --noconfirm
 pacboy -S sdl3 --noconfirm
-
+pacboy -S meson --noconfirm
+pacboy -S ninja --noconfirm
 
 rm -rf oolite
 git clone --filter=blob:none https://github.com/OoliteProject/oolite.git
