@@ -110,6 +110,23 @@ else
 	native_file="gcc.ini"
 fi
 
+export GS_MAKE="$MINGW_PREFIX/share/GNUstep/Makefiles"
+echo "****************************"
+echo "gnustep-config --objc-flags:"
+GNUSTEP_MAKEFILES=$GS_MAKE gnustep-config --objc-flags
+echo ""
+echo "gnustep-config --debug-flags:"
+GNUSTEP_MAKEFILES=$GS_MAKE gnustep-config --debug-flags
+echo ""
+echo "gnustep-config --objc-libs:"
+GNUSTEP_MAKEFILES=$GS_MAKE gnustep-config --objc-libs
+echo ""
+echo "gnustep-config --base-libs:"
+GNUSTEP_MAKEFILES=$GS_MAKE gnustep-config --base-libs
+unset GS_MAKE
+echo "****************************"
+echo ""
+
 cd oolite
 make clean
 if make release NATIVE_FILE="$native_file"; then
