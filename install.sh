@@ -141,7 +141,7 @@ chmod +x "${TMP_DIR}/extracted/gitversion.exe"
 mv "${TMP_DIR}/extracted/gitversion.exe" "${DEST_DIR}/gitversion.exe"
 rm -rf "${TMP_DIR}"
 
-if ! "${DEST_DIR}/gitversion.exe" --version; then
+if ! gitversion --version; then
     echo "❌ Could not install gitversion!" >&2
     exit 1
 fi
