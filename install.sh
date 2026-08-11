@@ -131,11 +131,18 @@ if [[ -z "${DOWNLOAD_URL}" || "${DOWNLOAD_URL}" == "null" ]]; then
 fi
 echo "📥 Installing GitVersion to ${DEST_DIR}..."
 mkdir -p "${DEST_DIR}"
-if ! curl -fsSLk "${DOWNLOAD_URL}" | unzip -p - gitversion.exe > "${DEST_DIR}/gitversion.exe"; then
-    echo "❌ Error: Failed to download or extract GitVersion." >&2
-    rm -f "${DEST_DIR}/gitversion.exe"
+TMP_ZIP=$(mktemp --suffix=.zip)
+if ! curl -fsSLk "${DOWNLOAD_URL}" -o "${TMP_ZIP}"; then
+    echo "❌ Error: Failed to download GitVersion ZIP archive." >&2
+    rm -f "${TMP_ZIP}"
     exit 1
 fi
+if ! unzip -o -q "${TMP_ZIP}" gitversion.exe -d "${DEST_DIR}"; then
+    echo "❌ Error: Failed to extract gitversion.exe from archive." >&2
+    rm -f "${TMP_ZIP}" "${DEST_DIR}/gitversion.exe"
+    exit 1
+fi
+rm -f "${TMP_ZIP}"
 chmod +x "${DEST_DIR}/gitversion.exe"
 if ! gitversion -version; then
     echo "❌ Could not install gitversion!" >&2
