@@ -61,6 +61,8 @@ build_install() {
     cd ..
 }
 
+set -o pipefail
+
 pacman -S dos2unix --noconfirm
 pacman -S pactoys --noconfirm
 pacboy -S binutils --noconfirm
@@ -127,20 +129,14 @@ if [[ -z "${DOWNLOAD_URL}" || "${DOWNLOAD_URL}" == "null" ]]; then
     echo "❌ Could not find a matching win-x64 download URL!" >&2
     exit 1
 fi
-TMP_DIR=$(mktemp -d)
-ZIP_NAME=$(basename "${DOWNLOAD_URL}")
-ZIP_PATH="${TMP_DIR}/${ZIP_NAME}"
-echo "📥 Downloading ${ZIP_NAME}..."
-curl -fsSL "${DOWNLOAD_URL}" -o "${ZIP_PATH}"
-echo "📦 Extracting GitVersion..."
-mkdir -p "${TMP_DIR}/extracted"
-unzip -o "${ZIP_PATH}" -d "${TMP_DIR}/extracted"
-echo "⚙️ Installing binary to ${DEST_DIR}..."
+echo "📥 Installing GitVersion to ${DEST_DIR}..."
 mkdir -p "${DEST_DIR}"
-chmod +x "${TMP_DIR}/extracted/gitversion.exe"
-mv "${TMP_DIR}/extracted/gitversion.exe" "${DEST_DIR}/gitversion.exe"
-rm -rf "${TMP_DIR}"
-
+if ! curl -fsSLk "${DOWNLOAD_URL}" | unzip -p - gitversion.exe > "${DEST_DIR}/gitversion.exe"; then
+    echo "❌ Error: Failed to download or extract GitVersion." >&2
+    rm -f "${DEST_DIR}/gitversion.exe"
+    exit 1
+fi
+chmod +x "${DEST_DIR}/gitversion.exe"
 if ! gitversion -version; then
     echo "❌ Could not install gitversion!" >&2
     exit 1
