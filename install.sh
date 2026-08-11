@@ -3,56 +3,62 @@
 # One parameter clang = build clang only (end setup will be for clang)
 
 rename() {
-	# First parameter is package name
-	# Second parameter is file pattern
-	# Third optional parameter is gcc or clang
+    # First parameter is package name
+    # Second parameter is file pattern
+    # Third optional parameter is gcc or clang
+    local fullname filename newname
+
     if [ -z "$3" ]; then
-		fullname=$1
+        fullname=$1
     else
-		fullname="${1}_${3}"
+        fullname="${1}_${3}"
     fi
+
     filename=$(ls $2 2>/dev/null)
     if [ -z "$filename" ]; then
         echo "❌ No file matching $2 found." >&2
         exit 1
     fi
+
     if [ "$3" ]; then
         newname="${filename/$1/$fullname}"
-        mv $filename $newname
+        mv "$filename" "$newname"
         filename=$newname
-	fi
+    fi
 
-	echo "${filename}" "${fullname}"
+    echo "${filename}" "${fullname}"
 }
 
 build_install() {
-	# First parameter is package name
-	# Second optional parameter is gcc or clang
+    # First parameter is package name
+    # Second optional parameter is gcc or clang
+    local filename fullname
+
     echo "Building and installing $1 package"
-	cd mingw-w64-$1
-	# Deletes everything except PKGBUILD* and *.patch
-	find . -mindepth 1 ! -name 'PKGBUILD*' ! -name '*.patch' -exec rm -rf {} +
+    cd "mingw-w64-$1"
+    # Deletes everything except PKGBUILD* and *.patch
+    find . -mindepth 1 ! -name 'PKGBUILD*' ! -name '*.patch' -exec rm -rf {} +
 
     if [ -n "$2" ]; then
-		# copy PKGBUILD_gcc or PKGBUILD_clang to PKGBUILD
-		cp "PKGBUILD_${2}" PKGBUILD
+        # copy PKGBUILD_gcc or PKGBUILD_clang to PKGBUILD
+        cp "PKGBUILD_${2}" PKGBUILD
     fi
-	dos2unix PKGBUILD *.patch
-	if ! makepkg -s -f --noconfirm ; then
-	    echo "❌ $1 build failed!" >&2
-	    exit 1
-	fi
+    dos2unix PKGBUILD *.patch
+    if ! makepkg -s -f --noconfirm ; then
+        echo "❌ $1 build failed!" >&2
+        exit 1
+    fi
 
-	# package file eg. mingw-w64-x86_64-libobjc2-2.3-3-any.pkg.tar.zst
-	read filename fullname <<< "$(rename $1 "*$1*any.pkg.tar.zst" $2)"
+    # package file eg. mingw-w64-x86_64-libobjc2-2.3-3-any.pkg.tar.zst
+    read filename fullname <<< "$(rename $1 "*$1*any.pkg.tar.zst" $2)"
 
-	if ! pacman -U $filename --noconfirm ; then
-	    echo "❌ $filename install failed!" >&2
-	    exit 1
-	fi
-	rm -f ../packages/*$fullname*any.pkg.tar.zst
-	mv $filename ../packages
-	cd ..
+    if ! pacman -U "$filename" --noconfirm ; then
+        echo "❌ $filename install failed!" >&2
+        exit 1
+    fi
+    rm -f ../packages/*$fullname*any.pkg.tar.zst
+    mv "$filename" ../packages
+    cd ..
 }
 
 pacman -S dos2unix --noconfirm
@@ -63,9 +69,9 @@ rm -rf packages
 mkdir packages
 
 echo "Building common libraries"
-package_names=(spidermonkey)
-for packagename in "${package_names[@]}"; do
-	build_install $packagename
+PACKAGE_NAMES=(spidermonkey)
+for PACKAGE_NAME in "${PACKAGE_NAMES[@]}"; do
+    build_install "$PACKAGE_NAME"
 done
 
 pacman -Syu --noconfirm
@@ -73,27 +79,27 @@ pacman -S --noconfirm dos2unix git pactoys unzip
 pacboy -S --noconfirm binutils espeak-ng jq libpng libvorbis mesa meson ninja nsis openal pcaudiolib python-pip sdl3
 
 if [[ -z "$1" || "$1" == "clang" ]]; then
-	echo "Building GNUStep libraries with clang"
-	export cc=$MINGW_PREFIX/bin/clang
-	export cxx=$MINGW_PREFIX/bin/clang++
-	clang_package_names=(libobjc2 gnustep-make gnustep-base)
-	for packagename in "${clang_package_names[@]}"; do
-		# add clang to filename
-		build_install $packagename clang
-	done
-	pacman -Q > packages/installed-packages-clang.txt
-	native_file="clang.ini"
+    echo "Building GNUStep libraries with clang"
+    export CC=$MINGW_PREFIX/bin/clang
+    export CXX=$MINGW_PREFIX/bin/clang++
+    CLANG_PACKAGE_NAMES=(libobjc2 gnustep-make gnustep-base)
+    for PACKAGE_NAME in "${CLANG_PACKAGE_NAMES[@]}"; do
+        # add clang to filename
+        build_install "$PACKAGE_NAME" clang
+    done
+    pacman -Q > packages/installed-packages-clang.txt
+    NATIVE_FILE="clang.ini"
 else
-	echo "Building GNUStep libraries with gcc"
-	export cc=$MINGW_PREFIX/bin/gcc
-	export cxx=$MINGW_PREFIX/bin/g++
-	gcc_package_names=(gnustep-make gnustep-base)
-	for packagename in "${gcc_package_names[@]}"; do
-		# add gcc to filename
-		build_install $packagename gcc
-	done
-	pacman -Q > packages/installed-packages-gcc.txt
-	native_file="gcc.ini"
+    echo "Building GNUStep libraries with gcc"
+    export CC=$MINGW_PREFIX/bin/gcc
+    export CXX=$MINGW_PREFIX/bin/g++
+    GCC_PACKAGE_NAMES=(gnustep-make gnustep-base)
+    for PACKAGE_NAME in "${GCC_PACKAGE_NAMES[@]}"; do
+        # add gcc to filename
+        build_install "$PACKAGE_NAME" gcc
+    done
+    pacman -Q > packages/installed-packages-gcc.txt
+    NATIVE_FILE="gcc.ini"
 fi
 
 export GS_MAKE="$MINGW_PREFIX/share/GNUstep/Makefiles"
@@ -134,7 +140,8 @@ mkdir -p "${DEST_DIR}"
 chmod +x "${TMP_DIR}/extracted/gitversion.exe"
 mv "${TMP_DIR}/extracted/gitversion.exe" "${DEST_DIR}/gitversion.exe"
 rm -rf "${TMP_DIR}"
-if "${DEST_DIR}/gitversion.exe" /version; then
+
+if ! "${DEST_DIR}/gitversion.exe" /version; then
     echo "❌ Could not install gitversion!" >&2
     exit 1
 fi
@@ -145,11 +152,11 @@ git clone --filter=blob:none https://github.com/OoliteProject/oolite.git
 cd oolite
 
 ./mk.sh clean dev
-if ./mk.sh build dev; then
-	echo "✅ Oolite build completed successfully"
+if ./mk.sh build dev --native-file="$NATIVE_FILE"; then
+    echo "✅ Oolite build completed successfully"
 else
-	echo "❌ Oolite build failed" >&2
-	exit 1
+    echo "❌ Oolite build failed" >&2
+    exit 1
 fi
 cd ..
 
