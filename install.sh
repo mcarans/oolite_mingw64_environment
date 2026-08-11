@@ -68,15 +68,23 @@ for packagename in "${package_names[@]}"; do
 	build_install $packagename
 done
 
-pacman -S git --noconfirm
-pacboy -S libpng --noconfirm
-pacboy -S openal --noconfirm
-pacboy -S libvorbis --noconfirm
-pacboy -S pcaudiolib --noconfirm 
-pacboy -S espeak-ng --noconfirm
-pacboy -S sdl3 --noconfirm
-pacboy -S meson --noconfirm
-pacboy -S ninja --noconfirm
+pacman -Syu --noconfirm
+pacman -S --noconfirm dos2unix git pactoys unzip
+pacboy -S --noconfirm binutils espeak-ng jq libpng libvorbis mesa meson ninja nsis openal pcaudiolib python-pip sdl3
+
+echo "Installing GitVersion"
+DOWNLOAD_URL=$(curl -s https://api.github.com/repos/GitTools/GitVersion/releases/latest \
+  | jq -r '.assets[] | select(.name | match("gitversion-win-x64-.*\\.zip")) | .browser_download_url')
+if [[ -z "$DOWNLOAD_URL" ]] || [[ "$DOWNLOAD_URL" == "null" ]]; then
+    echo "Error: Could not find GitVersion download URL."
+    exit 1
+fi
+TMP_DIR=$(mktemp -d)
+curl -sL "$DOWNLOAD_URL" -o "$TMP_DIR/gitversion.zip"
+mkdir -p /usr/local/bin
+unzip -q -o "$TMP_DIR/gitversion.zip" -d "$TMP_DIR/extracted"
+mv "$TMP_DIR/extracted/gitversion.exe" /usr/local/bin/
+rm -rf "$TMP_DIR"
 
 rm -rf oolite
 git clone --filter=blob:none https://github.com/OoliteProject/oolite.git
@@ -123,6 +131,17 @@ echo "****************************"
 echo ""
 
 cd oolite
+
+cd build
+# install gitversion
+outputdir="."
+download_github_release gitversion_zip "GitTools" "GitVersion" "win-x64" "$outputdir"
+unzip -o ${gitversion_zip} -d "$outputdir"
+chmod +x "$outputdir/gitversion.exe"
+mv "$outputdir/gitversion.exe" "$MINGW_PREFIX/bin/gitversion.exe"
+rm -f ${gitversion_zip}
+cd ..
+
 make clean
 if make release NATIVE_FILE="$native_file"; then
 	echo "✅ Oolite build completed successfully"
