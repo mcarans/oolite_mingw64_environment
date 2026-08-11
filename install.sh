@@ -72,23 +72,6 @@ pacman -Syu --noconfirm
 pacman -S --noconfirm dos2unix git pactoys unzip
 pacboy -S --noconfirm binutils espeak-ng jq libpng libvorbis mesa meson ninja nsis openal pcaudiolib python-pip sdl3
 
-echo "Installing GitVersion"
-DOWNLOAD_URL=$(curl -s https://api.github.com/repos/GitTools/GitVersion/releases/latest \
-  | jq -r '.assets[] | select(.name | match("gitversion-win-x64-.*\\.zip")) | .browser_download_url')
-if [[ -z "$DOWNLOAD_URL" ]] || [[ "$DOWNLOAD_URL" == "null" ]]; then
-    echo "Error: Could not find GitVersion download URL."
-    exit 1
-fi
-TMP_DIR=$(mktemp -d)
-curl -sL "$DOWNLOAD_URL" -o "$TMP_DIR/gitversion.zip"
-mkdir -p /usr/local/bin
-unzip -q -o "$TMP_DIR/gitversion.zip" -d "$TMP_DIR/extracted"
-mv "$TMP_DIR/extracted/gitversion.exe" /usr/local/bin/
-rm -rf "$TMP_DIR"
-
-rm -rf oolite
-git clone --filter=blob:none https://github.com/OoliteProject/oolite.git
-
 if [[ -z "$1" || "$1" == "clang" ]]; then
 	echo "Building GNUStep libraries with clang"
 	export cc=$MINGW_PREFIX/bin/clang
@@ -130,20 +113,39 @@ unset GS_MAKE
 echo "****************************"
 echo ""
 
+DEST_DIR="/usr/local/bin"
+echo "Fetching latest GitVersion release info..."
+RELEASE_JSON=$(curl -fsSL "https://api.github.com/repos/GitTools/GitVersion/releases/latest")
+DOWNLOAD_URL=$(echo "${RELEASE_JSON}" | jq -r '.assets[] | select(.name | contains("win-x64")) | .browser_download_url' | head -n 1)
+if [[ -z "${DOWNLOAD_URL}" || "${DOWNLOAD_URL}" == "null" ]]; then
+    echo "❌ Could not find a matching win-x64 download URL!" >&2
+    exit 1
+fi
+TMP_DIR=$(mktemp -d)
+ZIP_NAME=$(basename "${DOWNLOAD_URL}")
+ZIP_PATH="${TMP_DIR}/${ZIP_NAME}"
+echo "📥 Downloading ${ZIP_NAME}..."
+curl -fsSL "${DOWNLOAD_URL}" -o "${ZIP_PATH}"
+echo "📦 Extracting GitVersion..."
+mkdir -p "${TMP_DIR}/extracted"
+unzip -o "${ZIP_PATH}" -d "${TMP_DIR}/extracted"
+echo "⚙️ Installing binary to ${DEST_DIR}..."
+mkdir -p "${DEST_DIR}"
+chmod +x "${TMP_DIR}/extracted/gitversion.exe"
+mv "${TMP_DIR}/extracted/gitversion.exe" "${DEST_DIR}/gitversion.exe"
+rm -rf "${TMP_DIR}"
+if "${DEST_DIR}/gitversion.exe" /version; then
+    echo "❌ Could not install gitversion!" >&2
+    exit 1
+fi
+echo "✅ GitVersion installed successfully!"
+
+rm -rf oolite
+git clone --filter=blob:none https://github.com/OoliteProject/oolite.git
 cd oolite
 
-cd build
-# install gitversion
-outputdir="."
-download_github_release gitversion_zip "GitTools" "GitVersion" "win-x64" "$outputdir"
-unzip -o ${gitversion_zip} -d "$outputdir"
-chmod +x "$outputdir/gitversion.exe"
-mv "$outputdir/gitversion.exe" "$MINGW_PREFIX/bin/gitversion.exe"
-rm -f ${gitversion_zip}
-cd ..
-
-make clean
-if make release NATIVE_FILE="$native_file"; then
+./mk.sh clean dev
+if ./mk.sh build dev; then
 	echo "✅ Oolite build completed successfully"
 else
 	echo "❌ Oolite build failed" >&2
