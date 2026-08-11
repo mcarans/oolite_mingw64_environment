@@ -80,11 +80,6 @@ pacboy -S ninja --noconfirm
 
 rm -rf oolite
 git clone --filter=blob:none https://github.com/OoliteProject/oolite.git
-cd oolite
-cp .absolute_gitmodules .gitmodules
-git submodule update --init
-git checkout -- .gitmodules
-cd ..
 
 if [[ -z "$1" || "$1" == "clang" ]]; then
 	echo "Building GNUStep libraries with clang"
